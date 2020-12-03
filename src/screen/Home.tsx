@@ -1,14 +1,11 @@
+import Chat from '@components/Chat';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 interface Props {}
 
 const Home = (props: Props) => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.hello}>Halloo hahah</Text>
-    </View>
-  );
+  return <Chat />;
 };
 
 export default Home;
