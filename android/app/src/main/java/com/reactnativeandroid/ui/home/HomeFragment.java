@@ -16,8 +16,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.facebook.react.ReactActivity;
 import com.reactnativeandroid.R;
-import com.reactnativeandroid.ReactMainActivity;
 import com.reactnativeandroid.ReactNativeActivity;
+import com.reactnativeandroid.RnInit;
 
 public class HomeFragment extends Fragment {
 
@@ -38,9 +38,8 @@ public class HomeFragment extends Fragment {
         rnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ReactNativeActivity.class);
+                Intent intent = new Intent(getActivity(), RnInit.class);
                 startActivity(intent);
-
             }
         });
 

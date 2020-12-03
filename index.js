@@ -1,12 +1,13 @@
 import React from 'react';
 import { AppRegistry, StyleSheet, Text, View } from 'react-native';
-import Home from './src/Home';
 
-class HelloWorld extends React.Component {
-  render() {
-    return <Home />;
-  }
-}
+const HelloWorld = () => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.hello}>android</Text>
+    </View>
+  );
+};
 var styles = StyleSheet.create({
   container: {
     flex: 1,

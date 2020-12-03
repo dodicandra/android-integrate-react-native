@@ -1,16 +1,53 @@
 package com.reactnativeandroid;
 
-import com.facebook.react.ReactActivity;
+import android.app.Application;
 
-public class ReactMainActivity extends ReactActivity {
-    public static MainActivity mainApps;
-    public static final String appName = "ReactNative";
+import com.facebook.react.PackageList;
+import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactNativeHost;
+import com.facebook.react.ReactPackage;
+import com.facebook.soloader.SoLoader;
 
-    protected Object getMainComponent() {
-        try {
-            return mainApps;
-        } catch (Error err) {
-            return appName;
-        }
+import java.util.List;
+
+public class ReactMainActivity extends Application implements ReactApplication {
+
+    private final ReactNativeHost mReactNativeHost =
+            new ReactNativeHost(this) {
+                @Override
+                public boolean getUseDeveloperSupport() {
+                    return BuildConfig.DEBUG;
+                }
+
+                @Override
+                protected List<ReactPackage> getPackages() {
+                    @SuppressWarnings("UnnecessaryLocalVariable")
+                    List<ReactPackage> packages = new PackageList(this).getPackages();
+                    // Packages that cannot be autolinked yet can be added manually here, for example:
+                    // packages.add(new MyReactNativePackage());
+                    return packages;
+                }
+
+                @Override
+                protected String getJSMainModuleName() {
+                    return "index";
+                }
+
+                @Override
+                protected String getJSBundleFile() {
+                    return "assets://index.android.bundle";
+                }
+            };
+
+    @Override
+    public ReactNativeHost getReactNativeHost() {
+        return mReactNativeHost;
     }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        SoLoader.init(this, false);
+    }
+
 }
