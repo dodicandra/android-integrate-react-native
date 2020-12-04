@@ -13,7 +13,9 @@
     "baseUrl": ".",
     "paths": {
       "@components/*": ["./src/components/*"],
-      "@screen/*": ["./src/screen/*"]
+      "@screen/*": ["./src/screen/*"],
+      "@types/*": ["./src/types/*"],
+      "@dumy/*": ["./src/dumy/*"]
     }
   }
 }

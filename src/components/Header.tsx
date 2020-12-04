@@ -1,25 +1,36 @@
-import React from 'react';
+import React, {FC, memo, useState} from 'react';
 
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, NativeModules, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View} from 'react-native';
 
+const {getUserId} = NativeModules;
 const {width, height} = Dimensions.get('window');
 
-interface Props {}
+interface Props {
+  name: string;
+}
 
-const Header = (props: Props) => {
+const Header: FC<Props> = ({name}) => {
+  const {width} = useWindowDimensions();
+  const [state, setState] = useState('');
+
+  getUserId.getData(name, (data) => {
+    setState(data);
+  });
+
   return (
-    <View style={styles.root}>
-      <Text style={styles.text}>Header</Text>
+    <View style={[styles.root, {width}]}>
+      <TouchableOpacity>
+        <Text style={styles.text}>Header {state}</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
-export default Header;
+export default memo(Header);
 
 const styles = StyleSheet.create({
   root: {
     backgroundColor: 'blue',
-    width,
     height: height * 0.07,
     justifyContent: 'center',
     borderBottomLeftRadius: 9,

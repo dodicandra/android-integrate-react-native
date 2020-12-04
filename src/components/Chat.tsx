@@ -1,13 +1,16 @@
-import React from 'react';
+import React, {FC} from 'react';
 
 import {StyleSheet, Text, View} from 'react-native';
 
-interface Props {}
+interface Props {
+  count: number;
+}
 
-const Chat = (props: Props) => {
+const Chat: FC<Props> = ({count}) => {
+  console.log('chat');
   return (
     <View style={styles.container}>
-      <Text style={styles.hello}>Chat</Text>
+      <Text style={styles.hello}>Chat {count}</Text>
     </View>
   );
 };
