@@ -26,7 +26,6 @@ const Login = (props: Props) => {
   const [load, setLoad] = useState(true);
   const [loginuser, {loading}] = useLazyQuery<LoginData, LoginAction>(LOGIN, {
     onCompleted: async (data) => {
-      console.log('com', data);
       await setToLocal('token', data.login.token);
     },
     onError: (e) => {
@@ -42,7 +41,6 @@ const Login = (props: Props) => {
   useEffect(() => {
     const getToken = async () => {
       const token = await getToLocal('token');
-      console.log(token);
       setLoad(false);
       if (token) {
         navigate();

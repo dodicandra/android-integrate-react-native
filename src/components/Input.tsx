@@ -1,18 +1,29 @@
-import React from 'react';
+import React, {FC} from 'react';
 
-import {Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Dimensions, GestureResponderEvent, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 
-interface Props {}
+interface Props {
+  onSend?: (event: GestureResponderEvent) => void;
+  onType?: (text: string) => void;
+  value?: string;
+}
 
 const rasio = width * 0.1;
 
-const Input = (props: Props) => {
+const Input: FC<Props> = ({onSend, onType, value}) => {
   return (
     <View style={styles.root}>
-      <TextInput placeholderTextColor="grey" multiline placeholder="Tulis Pesan..." style={styles.input} />
-      <TouchableOpacity style={{flex: 0.5, justifyContent: 'center', alignItems: 'center'}}>
+      <TextInput
+        onChangeText={onType}
+        placeholderTextColor="grey"
+        multiline
+        placeholder="Tulis Pesan..."
+        style={styles.input}
+        value={value}
+      />
+      <TouchableOpacity onPress={onSend} style={{flex: 0.5, justifyContent: 'center', alignItems: 'center'}}>
         <View style={styles.btn}>
           <Text style={{color: 'white'}}>send</Text>
         </View>

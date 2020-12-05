@@ -22,32 +22,26 @@ export type LoginData = {
 };
 
 export type INewMsg = {
-  newMessage: {
-    uuid: string;
-    content: string;
-    from: string;
-    to: string;
-    createdAt: Date;
-    image: string;
-  };
+  newMessage: Message;
 };
 
 export type IgetMsg = {
-  getMessages: {
-    uuid: string;
-    content: string;
-    from: string;
-    to: string;
-    createdAt: Date;
-    image: string;
-  }[];
+  getMessages: Message[];
 };
 
 export interface Message {
-  uuid: string;
+  uuid?: string;
   content: string;
   from: string;
   to: string;
-  createdAt: Date;
-  image: string;
+  createdAt?: string;
+  image: string | null;
 }
+
+export type SendMsgAction = {
+  sendMessage: {
+    to: string;
+    content?: string;
+    image?: string;
+  };
+};

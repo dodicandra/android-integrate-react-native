@@ -7,11 +7,10 @@ import {Message} from '#typing/apollo';
 
 interface Props {
   chat: Message;
+  user: string;
 }
 
-let user = 'bons padang';
-
-const Chat: FC<Props> = ({chat}) => {
+const Chat: FC<Props> = ({chat, user}) => {
   const curenuser = chat.from === user;
 
   return (
@@ -19,14 +18,14 @@ const Chat: FC<Props> = ({chat}) => {
       style={[
         styles.container,
         {
-          alignSelf: curenuser ? 'flex-start' : 'flex-end',
-          borderBottomLeftRadius: curenuser ? 0 : 7,
-          borderBottomRightRadius: !curenuser ? 0 : 7,
-          backgroundColor: curenuser ? '#03ACD2' : 'white',
+          alignSelf: !curenuser ? 'flex-start' : 'flex-end',
+          borderBottomLeftRadius: !curenuser ? 0 : 9,
+          borderBottomRightRadius: curenuser ? 0 : 9,
+          backgroundColor: !curenuser ? '#03ACD2' : 'white',
         },
       ]}
     >
-      <Text style={[styles.hello, {color: curenuser ? 'white' : 'black'}]}>{chat.content}</Text>
+      <Text style={[styles.hello, {color: !curenuser ? 'white' : 'black'}]}>{chat.content}</Text>
     </TouchableOpacity>
   );
 };
@@ -37,7 +36,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     maxWidth: 230,
-    borderRadius: 7,
+    borderRadius: 9,
     marginVertical: 7,
     elevation: 5,
   },

@@ -26,7 +26,6 @@ export const reducer = (state: State, action: Action): State => {
     case 'ADD_SINGLE_MSG':
       const newmsg = [...state.message];
       newmsg.push(action.payload);
-      console.log(newmsg);
       return {
         ...state,
         message: newmsg,
