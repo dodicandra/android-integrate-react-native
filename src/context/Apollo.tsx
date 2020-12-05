@@ -1,9 +1,13 @@
 import React, {useEffect, useState} from 'react';
 
-import {createHttpLink, split, ApolloClient, ApolloProvider as Provider, InMemoryCache} from '@apollo/client';
+import {InMemoryCache} from '@apollo/client/cache/inmemory/inMemoryCache';
+import {ApolloClient} from '@apollo/client/core/ApolloClient';
 import {setContext} from '@apollo/client/link/context';
+import {split} from '@apollo/client/link/core';
+import {createHttpLink} from '@apollo/client/link/http';
 import {WebSocketLink} from '@apollo/client/link/ws';
-import {getMainDefinition} from '@apollo/client/utilities';
+import {ApolloProvider as Provider} from '@apollo/client/react';
+import {getMainDefinition} from '@apollo/client/utilities/graphql/getFromAST';
 
 import {getToLocal} from '#utils/localstorage';
 

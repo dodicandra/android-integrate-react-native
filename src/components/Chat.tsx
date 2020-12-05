@@ -1,6 +1,6 @@
 import React, {memo, FC} from 'react';
 
-import {StyleSheet, Text} from 'react-native';
+import {useWindowDimensions, StyleSheet, Text} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
 import {Message} from '#typing/apollo';
@@ -11,6 +11,7 @@ interface Props {
 }
 
 const Chat: FC<Props> = ({chat, user}) => {
+  const {width} = useWindowDimensions();
   const curenuser = chat.from === user;
 
   return (
@@ -22,6 +23,7 @@ const Chat: FC<Props> = ({chat, user}) => {
           borderBottomLeftRadius: !curenuser ? 0 : 9,
           borderBottomRightRadius: curenuser ? 0 : 9,
           backgroundColor: !curenuser ? '#03ACD2' : 'white',
+          maxWidth: width * 0.8,
         },
       ]}
     >
@@ -35,10 +37,11 @@ export default memo(Chat);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    maxWidth: 230,
     borderRadius: 9,
     marginVertical: 7,
     elevation: 5,
+    paddingHorizontal: 7,
+    paddingVertical: 4,
   },
   hello: {
     fontSize: 17,
