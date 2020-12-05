@@ -1,7 +1,8 @@
 apply plugin: 'com.android.application';
 
 project.ext.react = [
-        enableHermes: true
+        enableHermes: false,
+        entryFile: "index.js"
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -26,7 +27,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

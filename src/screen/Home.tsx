@@ -1,14 +1,14 @@
-import React, {memo, useEffect, useState} from 'react';
+import React, {memo, useEffect, useReducer, useRef, useState} from 'react';
 
-import {gql, useSubscription} from '@apollo/client';
+import {gql, useLazyQuery, useSubscription} from '@apollo/client';
 
-import {View} from 'react-native';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {ScrollView, Text, View} from 'react-native';
 
+import Chat from '#components/Chat';
 import Header from '#components/Header';
-import ImageChat from '#components/ImageChat';
-import {dataChat} from '#dumy/data';
-import {IMessage} from '#typing/message';
+import Input from '#components/Input';
+import {IgetMsg, INewMsg} from '#typing/apollo';
+import {reducer} from '#utils/reducer';
 
 interface Props {}
 
@@ -25,44 +25,70 @@ const NEW_MSG = gql`
   }
 `;
 
+const GET_ADMIN = gql`
+  query {
+    getAdmin {
+      username
+      createdAt
+      imageUrl
+      role
+    }
+  }
+`;
+
+const GET_MESSAGE = gql`
+  query getMessage($from: String!) {
+    getMessages(from: $from) {
+      uuid
+      content
+      from
+      to
+      createdAt
+      image
+    }
+  }
+`;
+
 const Home = (props: Props) => {
-  const [msg, setMsg] = useState(dataChat);
-
-  const {data, loading, error} = useSubscription(NEW_MSG);
-
   const [name, setName] = useState('');
-  const onSend = (newMessages: IMessage[] = []) => {
-    setMsg(GiftedChat.append(msg, newMessages));
-    const n = newMessages.map((el) => el.text)[0];
-    setName(n);
-  };
-  console.log(data, loading, error);
+  const [state, dispatch] = useReducer(reducer, {message: []});
+  const {data} = useSubscription<INewMsg>(NEW_MSG, {fetchPolicy: 'network-only'});
+  const ref = useRef<ScrollView>(null);
 
-  useEffect(() => {}, [data]);
+  const [getMessage] = useLazyQuery<IgetMsg, {from: string}>(GET_MESSAGE, {
+    onCompleted: (data) => {
+      dispatch({type: 'ADD_MSG', payload: data.getMessages});
+      console.log(data);
+    },
+  });
+
+  useEffect(() => {
+    const curenmsg = state.message[state.message.length - 1]?.content !== data?.newMessage?.content;
+    if (data && curenmsg) {
+      dispatch({type: 'ADD_SINGLE_MSG', payload: data.newMessage});
+    }
+  }, [data]);
+
+  useEffect(() => {
+    getMessage({variables: {from: 'dodi'}});
+  }, []);
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <Header name={name} />
       <View style={{flex: 1}}>
-        <GiftedChat
-          onSend={onSend}
-          messages={msg}
-          showUserAvatar={false}
-          user={{name: 'dodi', _id: 1, avatar: 'https://source.unsplash.com/random'}}
-          scrollToBottom
-          renderMessageImage={(props) => <ImageChat src={{uri: ''}} />}
-          placeholder="Tulis pesan..."
-          imageProps={{
-            showUserAvatar: true,
-            key: 'images',
-            position: 'left',
-            user: {
-              _id: 1,
-              name: 'dodi',
-            },
-          }}
-        />
+        <ScrollView
+          contentContainerStyle={{padding: 20}}
+          onContentSizeChange={() => ref.current?.scrollToEnd()}
+          ref={ref}
+          style={{flex: 1}}
+        >
+          {state.message.map((chat) => (
+            <Chat key={chat.uuid} chat={chat} />
+          ))}
+        </ScrollView>
       </View>
+      <Input />
     </View>
   );
 };

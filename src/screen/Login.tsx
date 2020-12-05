@@ -2,26 +2,13 @@ import React, {memo, useEffect, useState} from 'react';
 
 import {gql, useLazyQuery} from '@apollo/client';
 
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {Button, NativeSyntheticEvent, NativeTouchEvent, StyleSheet, Text, View} from 'react-native';
 
+import {LoginAction, LoginData} from '#typing/apollo';
 import {getToLocal, setToLocal} from '#utils/localstorage';
 import {navigate} from '#utils/Rootnavigator';
 
 interface Props {}
-
-type LoginAction = {
-  username: string;
-  password: string;
-};
-
-type LoginData = {
-  login: {
-    username: string;
-    token: string;
-    email: string;
-    role: string;
-  };
-};
 
 const LOGIN = gql`
   query login($username: String!, $password: String!) {
@@ -35,20 +22,20 @@ const LOGIN = gql`
 `;
 
 const Login = (props: Props) => {
-  const [values, setValues] = useState({username: 'dodi', password: '123123'});
+  const [values, setValues] = useState({username: 'bons padang', password: '123123'});
   const [load, setLoad] = useState(true);
   const [loginuser, {loading}] = useLazyQuery<LoginData, LoginAction>(LOGIN, {
     onCompleted: async (data) => {
-      console.log(data);
+      console.log('com', data);
       await setToLocal('token', data.login.token);
     },
     onError: (e) => {
-      console.log('error', e?.graphQLErrors[0]?.extensions?.erros);
+      console.log('error', e?.graphQLErrors[0]);
     },
   });
 
-  const loginaction = () => {
-    console.log('object');
+  const loginaction = (ev: NativeSyntheticEvent<NativeTouchEvent>) => {
+    ev.preventDefault();
     loginuser({variables: values});
   };
 
@@ -75,7 +62,7 @@ const Login = (props: Props) => {
   return (
     <View style={styles.root}>
       <Text>Login</Text>
-      <Button title="login" onPress={() => loginaction()} />
+      <Button title="login" onPress={loginaction} />
     </View>
   );
 };

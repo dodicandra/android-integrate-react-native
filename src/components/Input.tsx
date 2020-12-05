@@ -11,7 +11,7 @@ const rasio = width * 0.1;
 const Input = (props: Props) => {
   return (
     <View style={styles.root}>
-      <TextInput placeholderTextColor="grey" multiline placeholder="Tulis Pesanmu Disini..." style={styles.input} />
+      <TextInput placeholderTextColor="grey" multiline placeholder="Tulis Pesan..." style={styles.input} />
       <TouchableOpacity style={{flex: 0.5, justifyContent: 'center', alignItems: 'center'}}>
         <View style={styles.btn}>
           <Text style={{color: 'white'}}>send</Text>

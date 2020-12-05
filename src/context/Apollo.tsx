@@ -7,37 +7,35 @@ import {getMainDefinition} from '@apollo/client/utilities';
 
 import {getToLocal} from '#utils/localstorage';
 
-let httpLink = createHttpLink({
-  uri: 'https://gql.admin-server-bons.com/',
+const httpLink = createHttpLink({
+  uri: 'https://gql.admin-server-bons.com/gql/',
 });
 
 export default function ApolloProvider(props: any) {
   const [state, setState] = useState('');
 
   const authLink = setContext(async (_, {headers}) => {
-    // get the authentication token from local storage if it exists
-
     return {
       headers: {
         ...headers,
-        authorization: state ? `Bearer ${state}` : '',
+        authorization: `Bearer ${state}`,
       },
     };
-
-    // return the headers to the context so httpLink can read them
   });
 
-  httpLink = authLink.concat(httpLink);
-
   const wsLink = new WebSocketLink({
-    uri: `ws://gql.admin-server-bons.com/graphql`,
+    uri: `wss://gql.admin-server-bons.com/gql/`,
     options: {
       reconnect: true,
+      lazy: true,
+      reconnectionAttempts: 1000,
       connectionParams: {
         Authorization: `Bearer ${state}`,
       },
     },
   });
+
+  const linkConcat = authLink.concat(httpLink);
 
   const splitLink = split(
     ({query}) => {
@@ -45,20 +43,21 @@ export default function ApolloProvider(props: any) {
       return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
     },
     wsLink,
-    httpLink
+    linkConcat
   );
 
   const client = new ApolloClient({
     link: splitLink,
     cache: new InMemoryCache(),
   });
+
   useEffect(() => {
     const getT = async () => {
       const token = await getToLocal('token');
       setState(token);
     };
     getT();
-  });
+  }, []);
 
   return <Provider client={client} {...props} />;
 }
