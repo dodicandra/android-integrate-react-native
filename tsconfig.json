@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ESNext",
     "module": "commonjs",
     "lib": ["ES5", "ES6"],
     // "allowJs": true,
@@ -11,11 +11,16 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
+    "noEmit": true,
+    "resolveJsonModule": true,
     "paths": {
-      "@components/*": ["./src/components/*"],
-      "@screen/*": ["./src/screen/*"],
-      "@types/*": ["./src/types/*"],
-      "@dumy/*": ["./src/dumy/*"]
+      "#components/*": ["./src/components/*"],
+      "#screen/*": ["./src/screen/*"],
+      "#typing/*": ["./src/types/*"],
+      "#utils/*": ["./src/utils/*"],
+      "#context/*": ["./src/context/*"],
+      "#navigation/*": ["./src/router/*"],
+      "#dumy/*": ["./src/dumy/*"]
     }
   }
 }

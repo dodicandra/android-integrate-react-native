@@ -10,10 +10,21 @@
     "make:as": "mkdir android\\app\\src\\main\\assets"
   },
   "dependencies": {
+    "@apollo/client": "^3.3.3",
+    "@react-native-async-storage/async-storage": "^1.13.2",
+    "@react-native-community/masked-view": "^0.1.10",
+    "@react-navigation/native": "^5.8.10",
+    "@react-navigation/stack": "^5.12.8",
+    "graphql": "^15.4.0",
     "react": "^16.14.0",
     "react-native": "^0.63.4",
+    "react-native-gesture-handler": "^1.9.0",
     "react-native-gifted-chat": "^0.16.3",
-    "react-native-image-picker": "^2.3.4"
+    "react-native-image-picker": "^2.3.4",
+    "react-native-reanimated": "^1.13.2",
+    "react-native-safe-area-context": "^3.1.9",
+    "react-native-screens": "^2.15.0",
+    "subscriptions-transport-ws": "^0.9.18"
   },
   "devDependencies": {
     "@types/react": "^17.0.0",
