@@ -1,6 +1,6 @@
 import React, {memo, useEffect, useReducer, useRef, useState} from 'react';
 
-import {GestureResponderEvent, ScrollView, View} from 'react-native';
+import {GestureResponderEvent, KeyboardAvoidingView, SafeAreaView, ScrollView} from 'react-native';
 
 import {useLazyQuery, useMutation, useSubscription} from '@apollo/client';
 
@@ -64,9 +64,9 @@ const Home = (props: Props) => {
   }, []);
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <Header name={name} />
-      <View style={{flex: 1}}>
+      <KeyboardAvoidingView enabled behavior="height" style={{flex: 1}}>
         <ScrollView
           contentContainerStyle={{padding: 20}}
           onContentSizeChange={() => ref.current?.scrollToEnd()}
@@ -77,17 +77,17 @@ const Home = (props: Props) => {
             <Chat user="bons padang" key={chat.uuid} chat={chat} />
           ))}
         </ScrollView>
-      </View>
-      <Input
-        imageChat={chat.image}
-        disable={disable}
-        value={chat.content}
-        onSendImage={pickImage}
-        onSend={submit}
-        onType={(text) => setChat({...chat, content: text})}
-        onImageCancel={() => setChat({...chat, image: ''})}
-      />
-    </View>
+        <Input
+          imageChat={chat.image}
+          disable={disable}
+          value={chat.content}
+          onSendImage={pickImage}
+          onSend={submit}
+          onType={(text) => setChat({...chat, content: text})}
+          onImageCancel={() => setChat({...chat, image: ''})}
+        />
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 

@@ -1,14 +1,17 @@
 import React, {memo, useEffect, useState} from 'react';
 
-import {Button, NativeSyntheticEvent, NativeTouchEvent, StyleSheet, Text, View} from 'react-native';
+import {Image, NativeSyntheticEvent, NativeTouchEvent, StyleSheet, Text, View} from 'react-native';
 
-import {gql, useLazyQuery} from '@apollo/client';
+import {useLazyQuery} from '@apollo/client';
 
+import Button from '#components/Button';
+import TypoGrapy from '#components/TypoGrapy';
 import {useAuth} from '#context/Auth';
 import {LOGIN} from '#GQl/gql';
 import {LoginAction, LoginData} from '#typing/apollo';
-import {getToLocal, setToLocal} from '#utils/localstorage';
-import {navigate} from '#utils/Rootnavigator';
+import {setToLocal} from '#utils/localstorage';
+
+const oke = require('../assets/oke.png');
 
 interface Props {}
 
@@ -46,8 +49,9 @@ const Login = (props: Props) => {
 
   return (
     <View style={styles.root}>
-      <Text>Login</Text>
-      <Button title="login" onPress={loginaction} />
+      <TypoGrapy text="Konfirmasi Akunmu dulu yaa..." />
+      <Image source={oke} resizeMode="contain" style={{width: 200, height: 300, marginBottom: 20}} />
+      <Button textSize={25} title="OK" onPress={loginaction} />
     </View>
   );
 };
@@ -59,5 +63,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'white',
   },
 });

@@ -1,7 +1,7 @@
 /// <reference types="node" />
 
-type StackChat<C = object, L = object, I = object> = {
-  Chat: C | undefined;
-  Login: L | undefined;
-  Image: I | undefined;
+type StackChat<C = any, L = any, I = any> = {
+  Chat: C;
+  Login: L;
+  Image: I;
 };

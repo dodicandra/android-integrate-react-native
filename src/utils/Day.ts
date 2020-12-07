@@ -1,4 +1,6 @@
-export function isSameDay(value: string | number | Date) {
+import dayjs from 'dayjs';
+
+export function isSame(value: string | number | Date) {
   const curenDate = getDate(value);
   const newDate = getDate(new Date());
 
@@ -40,3 +42,20 @@ export const getTime = (value: string) => {
 
   return `${h}:${s}`;
 };
+
+type Message = {createdAt: string};
+
+export function isSameDay(currentMessage: Message, diffMessage: Message) {
+  if (!diffMessage || !diffMessage.createdAt) {
+    return false;
+  }
+
+  const currentCreatedAt = dayjs(currentMessage.createdAt);
+  const diffCreatedAt = dayjs(diffMessage.createdAt);
+
+  if (!currentCreatedAt.isValid() || !diffCreatedAt.isValid()) {
+    return false;
+  }
+
+  return currentCreatedAt.isSame(diffCreatedAt, 'day');
+}

@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
     flex: 2,
     fontSize: 15,
     marginRight: 8,
+    backgroundColor: 'white',
   },
   btn: {
     backgroundColor: 'white',

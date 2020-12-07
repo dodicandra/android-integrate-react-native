@@ -1,5 +1,7 @@
 import React, {memo, FC} from 'react';
 
+import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 import {
   useWindowDimensions, Image, NativeModules,
   StyleSheet, Text, ToastAndroid,
@@ -9,8 +11,9 @@ import {
 import {useNavigation} from '@react-navigation/native';
 
 import {Message} from '#typing/apollo';
-import {getDate, getTime} from '#utils/Day';
+import {ImageScren} from '#typing/navigation';
 
+dayjs.extend(localizedFormat);
 const {RNCClipboard} = NativeModules;
 
 interface Props {
@@ -21,8 +24,8 @@ interface Props {
 const Chat: FC<Props> = ({chat, user}) => {
   const {width} = useWindowDimensions();
   const curenuser = chat.from === user;
-  const navigate = useNavigation();
-  const date = getDate(chat.createdAt!);
+  const navigate = useNavigation<ImageScren>();
+  const date = dayjs(chat.createdAt).format('DD/MM/YY');
 
   const onCopy = () => {
     RNCClipboard.setString(chat.content);
@@ -49,8 +52,9 @@ const Chat: FC<Props> = ({chat, user}) => {
       <Text style={[styles.date, {alignSelf: !curenuser ? 'flex-start' : 'flex-end'}]}>{date}</Text>
     </View>
   ) : (
-    <View style={{paddingVertical: 5}}>
+    <View accessible style={{paddingVertical: 5}}>
       <TouchableOpacity
+        delayLongPress={500}
         onLongPress={onCopy}
         style={[
           styles.container,
@@ -63,8 +67,10 @@ const Chat: FC<Props> = ({chat, user}) => {
           },
         ]}
       >
-        <Text style={[styles.hello, {color: !curenuser ? 'white' : 'black'}]}>{chat.content}</Text>
-        <Text style={{color: !curenuser ? 'white' : '#dedede'}}>{getTime(chat.createdAt!)}</Text>
+        <Text accessible style={[styles.hello, {color: !curenuser ? 'white' : 'black'}]}>
+          {chat.content}
+        </Text>
+        <Text style={{color: !curenuser ? 'white' : '#dedede'}}>{dayjs(chat.createdAt).format('HH:mm')}</Text>
       </TouchableOpacity>
       <Text style={[styles.date, {alignSelf: !curenuser ? 'flex-start' : 'flex-end'}]}>{date}</Text>
     </View>

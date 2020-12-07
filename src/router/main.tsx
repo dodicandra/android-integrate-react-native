@@ -10,7 +10,7 @@ const {Navigator, Screen} = createStackNavigator<StackChat>();
 
 export const StackChat = () => {
   return (
-    <Navigator headerMode="none" initialRouteName="Login">
+    <Navigator headerMode="none" initialRouteName="Login" mode="modal">
       <Screen component={Home} name="Chat" />
       <Screen component={Login} name="Login" />
       <Screen component={ImageChat} name="Image" />
