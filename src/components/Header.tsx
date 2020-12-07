@@ -1,9 +1,12 @@
-import React, {FC, memo, useState} from 'react';
+import React, {memo, useState, FC} from 'react';
 
-import {Dimensions, NativeModules, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View} from 'react-native';
+import {useWindowDimensions, Dimensions, Image, NativeModules, StyleSheet, Text, View} from 'react-native';
+
+const bons = require('../assets/LOGOWP.webp');
+const kustumer = require('../assets/headphones.png');
 
 const {getUserId} = NativeModules;
-const {width, height} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 interface Props {
   name: string;
@@ -19,9 +22,8 @@ const Header: FC<Props> = ({name}) => {
 
   return (
     <View style={[styles.root, {width}]}>
-      <TouchableOpacity>
-        <Text style={styles.text}>Header {state}</Text>
-      </TouchableOpacity>
+      <Image source={kustumer} style={{width: 35, height: 35, marginLeft: 20}} />
+      <Text style={styles.text}>Kostumer Bons</Text>
     </View>
   );
 };
@@ -30,16 +32,19 @@ export default memo(Header);
 
 const styles = StyleSheet.create({
   root: {
-    backgroundColor: 'blue',
-    height: height * 0.07,
-    justifyContent: 'center',
-    borderBottomLeftRadius: 9,
-    borderBottomRightRadius: 9,
+    backgroundColor: '#03ACD2',
+    height: height * 0.1,
+    borderBottomEndRadius: 12,
+    borderBottomStartRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   text: {
     textAlign: 'center',
-    fontSize: 25,
+    fontSize: 20,
     letterSpacing: 1.2,
     color: 'white',
+    marginLeft: 18,
+    fontWeight: '700',
   },
 });

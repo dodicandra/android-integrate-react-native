@@ -1,97 +1,56 @@
 import React, {memo, useEffect, useReducer, useRef, useState} from 'react';
 
-import {gql, useLazyQuery, useMutation, useSubscription} from '@apollo/client';
+import {GestureResponderEvent, ScrollView, View} from 'react-native';
 
-import {GestureResponderEvent, ScrollView, Text, View} from 'react-native';
+import {useLazyQuery, useMutation, useSubscription} from '@apollo/client';
 
 import Chat from '#components/Chat';
 import Header from '#components/Header';
 import Input from '#components/Input';
-import {IgetMsg, INewMsg, Message, SendMsgAction} from '#typing/apollo';
+import {GET_MESSAGE, NEW_MSG, SEND_MSG} from '#GQl/gql';
+import {IgetMsg, INewMsg, SendMsgAction, SendMsgType} from '#typing/apollo';
+import {PickImage} from '#utils/pickimage';
 import {reducer} from '#utils/reducer';
 
 interface Props {}
-
-const NEW_MSG = gql`
-  subscription newMessage {
-    newMessage {
-      uuid
-      content
-      from
-      to
-      createdAt
-      image
-    }
-  }
-`;
-
-const GET_ADMIN = gql`
-  query {
-    getAdmin {
-      username
-      createdAt
-      imageUrl
-      role
-    }
-  }
-`;
-
-const GET_MESSAGE = gql`
-  query getMessage($from: String!) {
-    getMessages(from: $from) {
-      uuid
-      content
-      from
-      to
-      createdAt
-      image
-    }
-  }
-`;
-
-const SEND_MSG = gql`
-  mutation sendMessage($to: String!, $content: String, $image: String) {
-    sendMessage(to: $to, content: $content, image: $image) {
-      uuid
-      content
-      from
-      to
-      createdAt
-    }
-  }
-`;
 
 let user = 'bons padang';
 
 const Home = (props: Props) => {
   const [name] = useState('');
   const [state, dispatch] = useReducer(reducer, {message: []});
-  const [chat, setChat] = useState<Message>({
+  const [chat, setChat] = useState({
     content: '',
-    from: '',
     image: '',
-    to: '',
   });
-  const {data} = useSubscription<INewMsg>(NEW_MSG, {fetchPolicy: 'network-only'});
+  const {data} = useSubscription<INewMsg>(NEW_MSG);
   const ref = useRef<ScrollView>(null);
-
+  const disable = chat.image.length ? false : !chat.content.length ? true : false;
   const [getMessage] = useLazyQuery<IgetMsg, {from: string}>(GET_MESSAGE, {
     onCompleted: (data) => {
       dispatch({type: 'ADD_MSG', payload: data.getMessages});
     },
   });
 
-  const [sendMessage] = useMutation<SendMsgAction>(SEND_MSG, {
+  const [sendMessage] = useMutation<SendMsgAction, SendMsgType>(SEND_MSG, {
     onError: (e) => console.log(e.networkError),
     onCompleted: () => {
-      setChat({...chat, content: ''});
+      setChat({...chat, content: '', image: ''});
     },
   });
+  const pickImage = async () => {
+    try {
+      const result = await PickImage();
+      setChat({...chat, image: result.data!});
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const submit = (e: GestureResponderEvent) => {
     e.preventDefault();
 
-    sendMessage({variables: {content: chat.content, to: 'dodi', image: null}});
+    sendMessage({variables: {content: chat.content, to: 'dodi', image: chat.image}});
   };
 
   useEffect(() => {
@@ -119,7 +78,15 @@ const Home = (props: Props) => {
           ))}
         </ScrollView>
       </View>
-      <Input value={chat.content} onSend={submit} onType={(text) => setChat({...chat, content: text})} />
+      <Input
+        imageChat={chat.image}
+        disable={disable}
+        value={chat.content}
+        onSendImage={pickImage}
+        onSend={submit}
+        onType={(text) => setChat({...chat, content: text})}
+        onImageCancel={() => setChat({...chat, image: ''})}
+      />
     </View>
   );
 };

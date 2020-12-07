@@ -24,6 +24,7 @@ module.exports = {
           '#screen': './src/screen',
           '#utils': './src/utils',
           '#navigation': './src/router',
+          '#GQl': './src/graphql',
           '#context': './src/context',
         },
       },

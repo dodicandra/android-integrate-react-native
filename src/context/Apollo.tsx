@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 
 import {InMemoryCache} from '@apollo/client/cache/inmemory/inMemoryCache';
 import {ApolloClient} from '@apollo/client/core/ApolloClient';
@@ -9,20 +9,22 @@ import {WebSocketLink} from '@apollo/client/link/ws';
 import {ApolloProvider as Provider} from '@apollo/client/react';
 import {getMainDefinition} from '@apollo/client/utilities/graphql/getFromAST';
 
-import {getToLocal} from '#utils/localstorage';
+import {navigate} from '#utils/Rootnavigator';
+
+import {useAuth} from './Auth';
 
 const httpLink = createHttpLink({
   uri: 'https://gql.admin-server-bons.com/gql/',
 });
 
 export default function ApolloProvider(props: any) {
-  const [state, setState] = useState('');
+  const {token, setAuth} = useAuth();
 
   const authLink = setContext(async (_, {headers}) => {
     return {
       headers: {
         ...headers,
-        authorization: `Bearer ${state}`,
+        authorization: `Bearer ${token}`,
       },
     };
   });
@@ -34,7 +36,7 @@ export default function ApolloProvider(props: any) {
       lazy: true,
       reconnectionAttempts: 1000,
       connectionParams: {
-        Authorization: `Bearer ${state}`,
+        Authorization: `Bearer ${token}`,
       },
     },
   });
@@ -54,14 +56,6 @@ export default function ApolloProvider(props: any) {
     link: splitLink,
     cache: new InMemoryCache(),
   });
-
-  useEffect(() => {
-    const getT = async () => {
-      const token = await getToLocal('token');
-      setState(token);
-    };
-    getT();
-  }, []);
 
   return <Provider client={client} {...props} />;
 }

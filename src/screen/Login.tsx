@@ -1,32 +1,25 @@
 import React, {memo, useEffect, useState} from 'react';
 
-import {gql, useLazyQuery} from '@apollo/client';
-
 import {Button, NativeSyntheticEvent, NativeTouchEvent, StyleSheet, Text, View} from 'react-native';
 
+import {gql, useLazyQuery} from '@apollo/client';
+
+import {useAuth} from '#context/Auth';
+import {LOGIN} from '#GQl/gql';
 import {LoginAction, LoginData} from '#typing/apollo';
 import {getToLocal, setToLocal} from '#utils/localstorage';
 import {navigate} from '#utils/Rootnavigator';
 
 interface Props {}
 
-const LOGIN = gql`
-  query login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      username
-      token
-      email
-      createdAt
-    }
-  }
-`;
-
 const Login = (props: Props) => {
   const [values, setValues] = useState({username: 'bons padang', password: '123123'});
+  const {setAuth} = useAuth();
   const [load, setLoad] = useState(true);
-  const [loginuser, {loading}] = useLazyQuery<LoginData, LoginAction>(LOGIN, {
+  const [loginuser] = useLazyQuery<LoginData, LoginAction>(LOGIN, {
     onCompleted: async (data) => {
       await setToLocal('token', data.login.token);
+      setAuth(data.login.token);
     },
     onError: (e) => {
       console.log('error', e?.graphQLErrors[0]);
@@ -39,20 +32,14 @@ const Login = (props: Props) => {
   };
 
   useEffect(() => {
-    const getToken = async () => {
-      const token = await getToLocal('token');
+    const preview = setTimeout(() => {
       setLoad(false);
-      if (token) {
-        navigate();
-      } else {
-        return;
-      }
-      return () => {
-        setLoad(false);
-      };
-    };
+    }, 500);
 
-    getToken();
+    return () => {
+      setLoad(false);
+      clearTimeout(preview);
+    };
   }, []);
 
   if (load) return <View />;
