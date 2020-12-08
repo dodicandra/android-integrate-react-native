@@ -4,40 +4,42 @@ import dayjs from 'dayjs';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import {ChildProps} from './Chat';
+import TextExtract from './TextExtract';
 
 const check = require('../assets/check.png');
 
 export const BubleChat = memo(({curenuser, onPress, width, chat}: ChildProps) => {
   const date = dayjs(chat.createdAt).format('DD/MM/YY');
+  const align = curenuser ? 'flex-end' : 'flex-start';
+  let colorDate = curenuser ? '#dedede' : 'white';
+  let colorText = curenuser ? 'black' : 'white';
+  let colorBackground = curenuser ? 'white' : '#03ACD2';
   return (
     <View
       accessible
       style={[
         styles.container,
         {
-          paddingVertical: 9,
-          alignSelf: !curenuser ? 'flex-start' : 'flex-end',
-          borderBottomLeftRadius: !curenuser ? 0 : 9,
+          alignSelf: align,
+          borderBottomLeftRadius: curenuser ? 9 : 0,
           borderBottomRightRadius: curenuser ? 0 : 9,
-          backgroundColor: !curenuser ? '#03ACD2' : 'white',
+          backgroundColor: colorBackground,
           maxWidth: width * 0.8,
         },
       ]}
     >
-      <TouchableOpacity delayLongPress={500} onLongPress={onPress}>
-        <Text accessible style={[styles.hello, {color: !curenuser ? 'white' : 'black'}]}>
+      <TouchableOpacity delayLongPress={300} onLongPress={onPress}>
+        <TextExtract curenuser={curenuser} style={[styles.hello, {color: colorText}]}>
           {chat.content}
-        </Text>
-        <View style={{flexDirection: 'row', alignItems: 'center', alignSelf: curenuser ? 'flex-end' : 'flex-start'}}>
-          <Text style={{color: !curenuser ? 'white' : '#dedede', fontSize: 10}}>
-            {dayjs(chat.createdAt).format('HH:mm')}
-          </Text>
+        </TextExtract>
+        <View style={[styles.check, {alignSelf: align}]}>
+          <Text style={{color: colorDate, fontSize: 10}}>{dayjs(chat.createdAt).format('HH:mm')}</Text>
           {curenuser ? (
             <Image source={check} resizeMode="contain" style={{width: 10, marginLeft: 20, height: 10}} />
           ) : null}
         </View>
       </TouchableOpacity>
-      <Text style={[styles.date, {alignSelf: !curenuser ? 'flex-start' : 'flex-end'}]}>{date}</Text>
+      <Text style={[styles.date, {alignSelf: align}]}>{date}</Text>
     </View>
   );
 });
@@ -49,10 +51,11 @@ const styles = StyleSheet.create({
     marginVertical: 7,
     elevation: 1,
     paddingHorizontal: 7,
-    paddingVertical: 4,
+    paddingVertical: 9,
+    marginBottom: 20,
   },
   hello: {
-    fontSize: 17,
+    fontSize: 13,
     letterSpacing: 1.2,
     lineHeight: 18,
     textAlign: 'left',
@@ -60,4 +63,8 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   date: {color: '#404040', position: 'absolute', fontSize: 8, bottom: -15},
+  check: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });

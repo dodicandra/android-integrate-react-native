@@ -1,6 +1,11 @@
 import AsycnStorage from '@react-native-async-storage/async-storage';
 
-export async function setToLocal(key: string, val?: string) {
+type Values = {
+  token: string;
+  username: string;
+};
+
+export async function setToLocal(key: string, val?: Values) {
   try {
     const value = JSON.stringify(val);
     await AsycnStorage.setItem(key, value);
@@ -9,9 +14,10 @@ export async function setToLocal(key: string, val?: string) {
     console.log(err);
   }
 }
-export async function getToLocal(key: string) {
+export async function getToLocal(key: string): Promise<Values | undefined> {
   try {
     const res = await AsycnStorage.getItem(key);
+    console.log(JSON.parse(res));
     return JSON.parse(res as string);
   } catch (err) {
     console.log(err);

@@ -5,6 +5,7 @@ export interface getUserId {
   getConstants: () => string;
   getId: () => string;
   getData: (name: string, calback: (d: string) => void) => any;
+  getDataFromInput: (calllback: (data) => string) => void;
 }
 
 export interface RNClip {

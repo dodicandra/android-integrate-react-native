@@ -59,3 +59,15 @@ export const LOGIN = gql`
     }
   }
 `;
+
+export const LOGON_OR_CREATE = gql`
+  query loginOrCreate($username: String!, $password: String!, $email: String!) {
+    loginOrCreate(username: $username, password: $password, email: $email) {
+      username
+      email
+      createdAt
+      token
+      role
+    }
+  }
+`;

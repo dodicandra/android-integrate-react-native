@@ -1,18 +1,19 @@
-import React, {memo, useEffect, useReducer, useRef, useState, FC} from 'react';
+import React, {useEffect, useReducer, useRef, useState, FC} from 'react';
 
-import dayjs from 'dayjs';
-import {GestureResponderEvent, KeyboardAvoidingView, ScrollView, View} from 'react-native';
+import {GestureResponderEvent, ScrollView, View} from 'react-native';
 
 import {useLazyQuery, useMutation, useSubscription} from '@apollo/client';
 
 import Chat from '#components/Chat';
 import Input from '#components/Input';
 import ScreenContainer from '#components/ScreenContainer';
+import {useAuth} from '#context/Auth';
 import {GET_MESSAGE, NEW_MSG, SEND_MSG} from '#GQl/gql';
 import {IgetMsg, INewMsg, SendMsgAction, SendMsgType} from '#typing/apollo';
-import {isSameDay} from '#utils/Day';
 import {PickImage} from '#utils/pickimage';
 import {reducer} from '#utils/reducer';
+
+let user = 'dodi';
 
 const Home: FC = () => {
   const [state, dispatch] = useReducer(reducer, {message: []});
@@ -21,6 +22,9 @@ const Home: FC = () => {
     image: '',
   });
   const {data} = useSubscription<INewMsg>(NEW_MSG);
+  const {
+    user: {username},
+  } = useAuth();
   const ref = useRef<ScrollView>(null);
   const disable = chat.image.length ? false : !chat.content.length ? true : false;
   const [getMessage] = useLazyQuery<IgetMsg, {from: string}>(GET_MESSAGE, {
@@ -47,7 +51,7 @@ const Home: FC = () => {
   const submit = (e: GestureResponderEvent) => {
     e.preventDefault();
 
-    sendMessage({variables: {content: chat.content, to: 'dodi', image: chat.image}});
+    sendMessage({variables: {content: chat.content, to: user, image: chat.image}});
   };
 
   useEffect(() => {
@@ -57,7 +61,7 @@ const Home: FC = () => {
   }, [data]);
 
   useEffect(() => {
-    getMessage({variables: {from: 'dodi'}});
+    getMessage({variables: {from: user}});
   }, []);
 
   return (
@@ -70,7 +74,7 @@ const Home: FC = () => {
         indicatorStyle="white"
       >
         {state.message.map((chat) => (
-          <Chat loading={loading} user="bons padang" key={chat.uuid} chat={chat} />
+          <Chat loading={loading} user={username!} key={chat.uuid} chat={chat} />
         ))}
       </ScrollView>
       <Input

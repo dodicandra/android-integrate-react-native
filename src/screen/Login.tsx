@@ -1,6 +1,6 @@
-import React, {memo, useEffect, useState, FC} from 'react';
+import React, {useEffect, useState, FC} from 'react';
 
-import {Image, NativeSyntheticEvent, NativeTouchEvent, StyleSheet, View} from 'react-native';
+import {Image, NativeSyntheticEvent, NativeTouchEvent, StyleSheet, TextInput, View} from 'react-native';
 
 import {useLazyQuery} from '@apollo/client';
 
@@ -8,20 +8,22 @@ import Button from '#components/Button';
 import ScreenContainer from '#components/ScreenContainer';
 import TypoGrapy from '#components/TypoGrapy';
 import {useAuth} from '#context/Auth';
-import {LOGIN} from '#GQl/gql';
-import {LoginAction, LoginData} from '#typing/apollo';
+import {LOGON_OR_CREATE} from '#GQl/gql';
+import {LoginAction, LoginOrCreateData} from '#typing/apollo';
 import {setToLocal} from '#utils/localstorage';
 
 const oke = require('../assets/oke.png');
 
 const Login: FC = () => {
-  const [values, setValues] = useState({username: 'bons padang', password: '123123'});
+  const [values, setValues] = useState({username: 'bons padang', password: '123123', email: ''});
   const {setAuth} = useAuth();
+
   const [load, setLoad] = useState(true);
-  const [loginuser] = useLazyQuery<LoginData, LoginAction>(LOGIN, {
+  const [loginuser] = useLazyQuery<LoginOrCreateData, LoginAction>(LOGON_OR_CREATE, {
     onCompleted: async (data) => {
-      await setToLocal('token', data.login.token);
-      setAuth(data.login.token);
+      const value = data.loginOrCreate;
+      await setToLocal('user', value);
+      setAuth(value);
     },
     onError: (e) => {
       console.log('error', e?.graphQLErrors[0]);
@@ -50,6 +52,10 @@ const Login: FC = () => {
     <View style={styles.root}>
       <TypoGrapy text="Konfirmasi Akunmu dulu yaa..." />
       <Image source={oke} resizeMode="contain" style={{width: 200, height: 300, marginBottom: 20}} />
+      <TextInput
+        value={values.username}
+        onChangeText={(text) => setValues({...values, username: text, email: text.replace(/\s+/g, '') + '@gmail.com'})}
+      />
       <Button textSize={25} title="Lanjutkan" onPress={loginaction} />
     </View>
   );

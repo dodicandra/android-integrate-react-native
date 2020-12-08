@@ -10,6 +10,16 @@ export type IAdmin = {
 export type LoginAction = {
   username: string;
   password: string;
+  email?: string;
+};
+
+export type LoginOrCreateData = {
+  loginOrCreate: {
+    username: string;
+    token: string;
+    email: string;
+    role: string;
+  };
 };
 
 export type LoginData = {

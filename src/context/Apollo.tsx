@@ -9,7 +9,6 @@ import {split} from '@apollo/client/link/core';
 import {createHttpLink} from '@apollo/client/link/http';
 import {WebSocketLink} from '@apollo/client/link/ws';
 import {ApolloProvider as Provider} from '@apollo/client/react';
-import {ApolloConsumerProps, ApolloProviderProps} from '@apollo/client/react/context';
 import {getMainDefinition} from '@apollo/client/utilities/graphql/getFromAST';
 
 import {useAuth} from './Auth';
@@ -19,13 +18,13 @@ const httpLink = createHttpLink({
 });
 
 export default function ApolloProvider(props: any) {
-  const {token} = useAuth();
+  const {user} = useAuth();
 
   const authLink = setContext(async (_, {headers}) => {
     return {
       headers: {
         ...headers,
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${user?.token}`,
       },
     };
   });
@@ -35,7 +34,7 @@ export default function ApolloProvider(props: any) {
       lazy: true,
       reconnect: true,
       connectionParams: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${user?.token}`,
       },
     })
   );

@@ -33,14 +33,15 @@ export type ChildProps = {
 
 const ImageChats = memo(({curenuser, width, chat, onPress}: ChildProps) => {
   const date = dayjs(chat.createdAt).format('DD/MM/YY');
+  const curentFlex = curenuser ? 'flex-end' : 'flex-start';
   return (
     <View style={{paddingVertical: 5, marginVertical: 16}}>
       <TouchableOpacity
         onPress={onPress}
         style={[
           {
-            alignSelf: !curenuser ? 'flex-start' : 'flex-end',
-            borderBottomLeftRadius: !curenuser ? 0 : 9,
+            alignSelf: curentFlex,
+            borderBottomLeftRadius: curenuser ? 9 : 0,
             borderBottomRightRadius: curenuser ? 0 : 9,
             maxWidth: width * 0.8,
             borderRadius: 12,
@@ -50,7 +51,7 @@ const ImageChats = memo(({curenuser, width, chat, onPress}: ChildProps) => {
       >
         <Image source={{uri: `data:image/jpeg;base64,${chat.image}`}} style={styles.image} />
       </TouchableOpacity>
-      <Text style={[styles.date, {alignSelf: !curenuser ? 'flex-start' : 'flex-end'}]}>{date}</Text>
+      <Text style={[styles.date, {alignSelf: curentFlex}]}>{date}</Text>
     </View>
   );
 });

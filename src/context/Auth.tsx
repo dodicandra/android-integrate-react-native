@@ -3,9 +3,14 @@ import React, {createContext, useContext, useEffect, useState, FC} from 'react';
 import {getToLocal} from '#utils/localstorage';
 import {navigate} from '#utils/Rootnavigator';
 
-type Auth = {
+type User = {
   token: string | null;
-  setAuth: React.Dispatch<React.SetStateAction<string | null>>;
+  username?: string;
+};
+
+type Auth = {
+  user: User;
+  setAuth: React.Dispatch<React.SetStateAction<User>>;
 };
 
 const AuthContext = createContext<Auth>({} as Auth);
@@ -20,21 +25,24 @@ export function useAuth() {
 }
 
 export const AuthProvider: FC = ({children}) => {
-  const [token, setToken] = useState<string | null>(null);
+  const [user, setToken] = useState<User>({
+    username: '',
+    token: null,
+  });
 
   useEffect(() => {
     const getToken = async () => {
-      const val = await getToLocal('token');
-      setToken(val);
+      const val = await getToLocal('user');
+      setToken(val!);
     };
     getToken();
   }, []);
 
   useEffect(() => {
-    if (token) {
+    if (user?.token) {
       navigate();
     }
-  }, [token]);
+  }, [user?.token]);
 
-  return <AuthContext.Provider value={{setAuth: setToken, token: token}}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{setAuth: setToken, user}}>{children}</AuthContext.Provider>;
 };
