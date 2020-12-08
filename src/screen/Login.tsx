@@ -1,10 +1,11 @@
-import React, {memo, useEffect, useState} from 'react';
+import React, {memo, useEffect, useState, FC} from 'react';
 
-import {Image, NativeSyntheticEvent, NativeTouchEvent, StyleSheet, Text, View} from 'react-native';
+import {Image, NativeSyntheticEvent, NativeTouchEvent, StyleSheet, View} from 'react-native';
 
 import {useLazyQuery} from '@apollo/client';
 
 import Button from '#components/Button';
+import ScreenContainer from '#components/ScreenContainer';
 import TypoGrapy from '#components/TypoGrapy';
 import {useAuth} from '#context/Auth';
 import {LOGIN} from '#GQl/gql';
@@ -13,9 +14,7 @@ import {setToLocal} from '#utils/localstorage';
 
 const oke = require('../assets/oke.png');
 
-interface Props {}
-
-const Login = (props: Props) => {
+const Login: FC = () => {
   const [values, setValues] = useState({username: 'bons padang', password: '123123'});
   const {setAuth} = useAuth();
   const [load, setLoad] = useState(true);
@@ -56,7 +55,7 @@ const Login = (props: Props) => {
   );
 };
 
-export default memo(Login);
+export default ScreenContainer()(Login);
 
 const styles = StyleSheet.create({
   root: {

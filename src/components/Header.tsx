@@ -9,21 +9,17 @@ const {getUserId} = NativeModules;
 const {height} = Dimensions.get('window');
 
 interface Props {
-  name: string;
+  name?: string;
 }
 
 const Header: FC<Props> = ({name}) => {
   const {width} = useWindowDimensions();
   const [state, setState] = useState('');
 
-  getUserId.getData(name, (data) => {
-    setState(data);
-  });
-
   return (
     <View style={[styles.root, {width}]}>
       <Image source={kustumer} style={{width: 35, height: 35, marginLeft: 20}} />
-      <Text style={styles.text}>Kostumer Bons</Text>
+      <Text style={styles.text}>Bons Indonesia</Text>
     </View>
   );
 };

@@ -1,4 +1,6 @@
-import React, {useEffect} from 'react';
+import React from 'react';
+
+import {SubscriptionClient} from 'subscriptions-transport-ws';
 
 import {InMemoryCache} from '@apollo/client/cache/inmemory/inMemoryCache';
 import {ApolloClient} from '@apollo/client/core/ApolloClient';
@@ -7,9 +9,8 @@ import {split} from '@apollo/client/link/core';
 import {createHttpLink} from '@apollo/client/link/http';
 import {WebSocketLink} from '@apollo/client/link/ws';
 import {ApolloProvider as Provider} from '@apollo/client/react';
+import {ApolloConsumerProps, ApolloProviderProps} from '@apollo/client/react/context';
 import {getMainDefinition} from '@apollo/client/utilities/graphql/getFromAST';
-
-import {navigate} from '#utils/Rootnavigator';
 
 import {useAuth} from './Auth';
 
@@ -18,7 +19,7 @@ const httpLink = createHttpLink({
 });
 
 export default function ApolloProvider(props: any) {
-  const {token, setAuth} = useAuth();
+  const {token} = useAuth();
 
   const authLink = setContext(async (_, {headers}) => {
     return {
@@ -29,17 +30,15 @@ export default function ApolloProvider(props: any) {
     };
   });
 
-  const wsLink = new WebSocketLink({
-    uri: `wss://gql.admin-server-bons.com/gql/`,
-    options: {
-      reconnect: true,
+  const wsLink = new WebSocketLink(
+    new SubscriptionClient('wss://gql.admin-server-bons.com/gql/', {
       lazy: true,
-      reconnectionAttempts: 1000,
+      reconnect: true,
       connectionParams: {
         Authorization: `Bearer ${token}`,
       },
-    },
-  });
+    })
+  );
 
   const linkConcat = authLink.concat(httpLink);
 

@@ -1,12 +1,12 @@
-import React, {memo, useEffect, useReducer, useRef, useState} from 'react';
+import React, {memo, useEffect, useReducer, useRef, useState, FC} from 'react';
 
-import {GestureResponderEvent, KeyboardAvoidingView, SafeAreaView, ScrollView} from 'react-native';
+import {GestureResponderEvent, KeyboardAvoidingView, ScrollView, View} from 'react-native';
 
 import {useLazyQuery, useMutation, useSubscription} from '@apollo/client';
 
 import Chat from '#components/Chat';
-import Header from '#components/Header';
 import Input from '#components/Input';
+import ScreenContainer from '#components/ScreenContainer';
 import {GET_MESSAGE, NEW_MSG, SEND_MSG} from '#GQl/gql';
 import {IgetMsg, INewMsg, SendMsgAction, SendMsgType} from '#typing/apollo';
 import {PickImage} from '#utils/pickimage';
@@ -16,8 +16,7 @@ interface Props {}
 
 let user = 'bons padang';
 
-const Home = (props: Props) => {
-  const [name] = useState('');
+const Home: FC = () => {
   const [state, dispatch] = useReducer(reducer, {message: []});
   const [chat, setChat] = useState({
     content: '',
@@ -32,7 +31,7 @@ const Home = (props: Props) => {
     },
   });
 
-  const [sendMessage] = useMutation<SendMsgAction, SendMsgType>(SEND_MSG, {
+  const [sendMessage, {loading}] = useMutation<SendMsgAction, SendMsgType>(SEND_MSG, {
     onError: (e) => console.log(e.networkError),
     onCompleted: () => {
       setChat({...chat, content: '', image: ''});
@@ -64,31 +63,29 @@ const Home = (props: Props) => {
   }, []);
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-      <Header name={name} />
-      <KeyboardAvoidingView enabled behavior="height" style={{flex: 1}}>
-        <ScrollView
-          contentContainerStyle={{padding: 20}}
-          onContentSizeChange={() => ref.current?.scrollToEnd()}
-          ref={ref}
-          style={{flex: 1}}
-        >
-          {state.message.map((chat) => (
-            <Chat user="bons padang" key={chat.uuid} chat={chat} />
-          ))}
-        </ScrollView>
-        <Input
-          imageChat={chat.image}
-          disable={disable}
-          value={chat.content}
-          onSendImage={pickImage}
-          onSend={submit}
-          onType={(text) => setChat({...chat, content: text})}
-          onImageCancel={() => setChat({...chat, image: ''})}
-        />
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+    <View style={{flex: 1, backgroundColor: 'white'}}>
+      <ScrollView
+        contentContainerStyle={{padding: 20}}
+        onContentSizeChange={() => ref.current?.scrollToEnd()}
+        ref={ref}
+        style={{flex: 1}}
+      >
+        {state.message.map((chat) => (
+          <Chat loading={loading} user="bons padang" key={chat.uuid} chat={chat} />
+        ))}
+      </ScrollView>
+      <Input
+        loading={loading}
+        imageChat={chat.image}
+        disable={disable}
+        value={chat.content}
+        onSendImage={pickImage}
+        onSend={submit}
+        onType={(text) => setChat({...chat, content: text})}
+        onImageCancel={() => setChat({...chat, image: ''})}
+      />
+    </View>
   );
 };
 
-export default memo(Home);
+export default ScreenContainer('#03ACD2')(Home);

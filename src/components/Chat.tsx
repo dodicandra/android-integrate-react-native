@@ -3,9 +3,9 @@ import React, {memo, FC} from 'react';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import {
-  useWindowDimensions, Image, NativeModules,
-  StyleSheet, Text, ToastAndroid,
-  TouchableOpacity, View
+  useWindowDimensions, GestureResponderEvent, Image,
+  NativeModules, StyleSheet, Text,
+  ToastAndroid, TouchableOpacity, View
 } from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
@@ -13,29 +13,30 @@ import {useNavigation} from '@react-navigation/native';
 import {Message} from '#typing/apollo';
 import {ImageScren} from '#typing/navigation';
 
+import {BubleChat} from './BubleChat';
+
 dayjs.extend(localizedFormat);
 const {RNCClipboard} = NativeModules;
 
 interface Props {
   chat: Message;
   user: string;
+  loading: boolean;
 }
 
-const Chat: FC<Props> = ({chat, user}) => {
-  const {width} = useWindowDimensions();
-  const curenuser = chat.from === user;
-  const navigate = useNavigation<ImageScren>();
+export type ChildProps = {
+  curenuser: boolean;
+  width: number;
+  onPress: (e: GestureResponderEvent) => void;
+  chat: Message;
+};
+
+const ImageChats = memo(({curenuser, width, chat, onPress}: ChildProps) => {
   const date = dayjs(chat.createdAt).format('DD/MM/YY');
-
-  const onCopy = () => {
-    RNCClipboard.setString(chat.content);
-    ToastAndroid.showWithGravity('text copied', 200, ToastAndroid.CENTER);
-  };
-
-  return chat.image?.length ? (
+  return (
     <View style={{paddingVertical: 5, marginVertical: 16}}>
       <TouchableOpacity
-        onPress={() => navigate.navigate('Image', {image: `data:image/jpeg;base64,${chat.image}`})}
+        onPress={onPress}
         style={[
           {
             alignSelf: !curenuser ? 'flex-start' : 'flex-end',
@@ -51,29 +52,28 @@ const Chat: FC<Props> = ({chat, user}) => {
       </TouchableOpacity>
       <Text style={[styles.date, {alignSelf: !curenuser ? 'flex-start' : 'flex-end'}]}>{date}</Text>
     </View>
+  );
+});
+
+const Chat: FC<Props> = ({chat, user, loading}) => {
+  const {width} = useWindowDimensions();
+  const curenuser = chat.from === user;
+  const navigate = useNavigation<ImageScren>();
+
+  const onCopy = () => {
+    RNCClipboard.setString(chat.content);
+    ToastAndroid.showWithGravity('text copied', 200, ToastAndroid.CENTER);
+  };
+
+  return chat.image?.length ? (
+    <ImageChats
+      onPress={() => navigate.navigate('Image', {image: `data:image/jpeg;base64,${chat.image}`})}
+      curenuser={curenuser}
+      width={width}
+      chat={chat}
+    />
   ) : (
-    <View accessible style={{paddingVertical: 5}}>
-      <TouchableOpacity
-        delayLongPress={500}
-        onLongPress={onCopy}
-        style={[
-          styles.container,
-          {
-            alignSelf: !curenuser ? 'flex-start' : 'flex-end',
-            borderBottomLeftRadius: !curenuser ? 0 : 9,
-            borderBottomRightRadius: curenuser ? 0 : 9,
-            backgroundColor: !curenuser ? '#03ACD2' : 'white',
-            maxWidth: width * 0.8,
-          },
-        ]}
-      >
-        <Text accessible style={[styles.hello, {color: !curenuser ? 'white' : 'black'}]}>
-          {chat.content}
-        </Text>
-        <Text style={{color: !curenuser ? 'white' : '#dedede'}}>{dayjs(chat.createdAt).format('HH:mm')}</Text>
-      </TouchableOpacity>
-      <Text style={[styles.date, {alignSelf: !curenuser ? 'flex-start' : 'flex-end'}]}>{date}</Text>
-    </View>
+    <BubleChat onPress={onCopy} chat={chat} curenuser={curenuser} width={width} />
   );
 };
 

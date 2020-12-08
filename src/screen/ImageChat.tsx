@@ -1,8 +1,10 @@
 import React, {FC} from 'react';
 
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, View} from 'react-native';
 
 import {StackScreenProps} from '@react-navigation/stack';
+
+import ScreenContainer from '#components/ScreenContainer';
 
 type ImageScren = StackScreenProps<StackChat<any, any, {image: string}>, 'Image'>;
 
@@ -18,6 +20,4 @@ const ImageChat: FC<Props> = ({route}) => {
   );
 };
 
-export default ImageChat;
-
-const styles = StyleSheet.create({});
+export default ScreenContainer()(ImageChat);

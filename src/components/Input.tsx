@@ -1,9 +1,10 @@
-import React, {FC} from 'react';
+import React, {memo, FC} from 'react';
 
 import {
-  useWindowDimensions, Dimensions, GestureResponderEvent,
-  Image, StyleSheet, Text,
-  TextInput, TouchableOpacity, View
+  useWindowDimensions, ActivityIndicator, Dimensions,
+  GestureResponderEvent, Image, StyleSheet,
+  Text, TextInput, TouchableOpacity,
+  View
 } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
@@ -19,11 +20,10 @@ interface Props {
   onSendImage?: (event: GestureResponderEvent) => void;
   imageChat?: string;
   onImageCancel?: (event: GestureResponderEvent) => void;
+  loading: boolean;
 }
 
-const rasio = width * 0.1;
-
-const Input: FC<Props> = ({onSend, onType, value, disable, onSendImage, imageChat, onImageCancel}) => {
+const Input: FC<Props> = ({onSend, onType, value, disable, onSendImage, imageChat, onImageCancel, loading}) => {
   const {width} = useWindowDimensions();
   return (
     <View style={{flexDirection: 'column', marginBottom: 10}}>
@@ -54,6 +54,8 @@ const Input: FC<Props> = ({onSend, onType, value, disable, onSendImage, imageCha
           >
             <Image source={image} resizeMode="stretch" style={{width: 35, height: 35}} />
           </TouchableOpacity>
+        ) : loading ? (
+          <ActivityIndicator size={30} color="#03ACD2" />
         ) : (
           <TouchableOpacity onPress={onSend} style={[styles.btn, {justifyContent: 'center', alignItems: 'center'}]}>
             <Image source={send} resizeMode="stretch" style={{width: 35, height: 35}} />
@@ -64,7 +66,7 @@ const Input: FC<Props> = ({onSend, onType, value, disable, onSendImage, imageCha
   );
 };
 
-export default Input;
+export default memo(Input);
 
 const styles = StyleSheet.create({
   root: {

@@ -1,7 +1,5 @@
 import React from 'react';
 
-import {StatusBar} from 'react-native';
-
 import {NavigationContainer} from '@react-navigation/native';
 
 import ApolloProvider from '#context/Apollo';
@@ -14,14 +12,6 @@ const App = () => {
     <AuthProvider>
       <ApolloProvider>
         <NavigationContainer ref={navigationRef}>
-          <StatusBar
-            animated
-            translucent
-            showHideTransition="fade"
-            hidden
-            backgroundColor="#03ACD2"
-            barStyle="dark-content"
-          />
           <StackChat />
         </NavigationContainer>
       </ApolloProvider>
