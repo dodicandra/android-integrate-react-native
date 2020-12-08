@@ -7,7 +7,7 @@ import {
   View
 } from 'react-native';
 
-const {width, height} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 const send = require('../assets/send-email.png');
 const image = require('../assets/insert-picture-icon.png');
@@ -18,7 +18,7 @@ interface Props {
   value?: string;
   disable?: boolean;
   onSendImage?: (event: GestureResponderEvent) => void;
-  imageChat?: string;
+  imageChat?: string | null;
   onImageCancel?: (event: GestureResponderEvent) => void;
   loading: boolean;
 }
@@ -31,7 +31,7 @@ const Input: FC<Props> = ({onSend, onType, value, disable, onSendImage, imageCha
         <View style={{flexDirection: 'row'}}>
           <Image
             source={{uri: `data:image/jpeg;base64,${imageChat}`}}
-            style={{width: 50, height: 50, borderRadius: 8, marginLeft: 16, marginBottom: 9}}
+            style={{width: 50, height: 50, borderRadius: 8, marginLeft: 16, marginVertical: 9}}
           />
           <TouchableOpacity onPress={onImageCancel} style={{position: 'absolute', right: 16, alignSelf: 'center'}}>
             <Text style={{fontSize: 18, color: '#1d81de'}}>Batal</Text>

@@ -15,18 +15,23 @@ import {reducer} from '#utils/reducer';
 
 let user = 'dodi';
 
+type Input = {
+  content?: string;
+  image?: string | null;
+};
+
 const Home: FC = () => {
   const [state, dispatch] = useReducer(reducer, {message: []});
-  const [chat, setChat] = useState({
+  const [chat, setChat] = useState<Input>({
     content: '',
-    image: '',
+    image: null,
   });
   const {data} = useSubscription<INewMsg>(NEW_MSG);
   const {
     user: {username},
   } = useAuth();
   const ref = useRef<ScrollView>(null);
-  const disable = chat.image.length ? false : !chat.content.length ? true : false;
+  const disable = chat.image?.length ? false : !chat.content?.length ? true : false;
   const [getMessage] = useLazyQuery<IgetMsg, {from: string}>(GET_MESSAGE, {
     onCompleted: (data) => {
       dispatch({type: 'ADD_MSG', payload: data.getMessages});
@@ -36,7 +41,7 @@ const Home: FC = () => {
   const [sendMessage, {loading}] = useMutation<SendMsgAction, SendMsgType>(SEND_MSG, {
     onError: (e) => console.log(e.networkError),
     onCompleted: () => {
-      setChat({...chat, content: '', image: ''});
+      setChat({...chat, content: '', image: null});
     },
   });
   const pickImage = async () => {
@@ -74,7 +79,7 @@ const Home: FC = () => {
         indicatorStyle="white"
       >
         {state.message.map((chat) => (
-          <Chat loading={loading} user={username!} key={chat.uuid} chat={chat} />
+          <Chat user={username!} key={chat.uuid} chat={chat} />
         ))}
       </ScrollView>
       <Input
@@ -85,7 +90,7 @@ const Home: FC = () => {
         onSendImage={pickImage}
         onSend={submit}
         onType={(text) => setChat({...chat, content: text})}
-        onImageCancel={() => setChat({...chat, image: ''})}
+        onImageCancel={() => setChat({...chat, image: null})}
       />
     </View>
   );

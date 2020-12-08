@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     marginVertical: 7,
     elevation: 1,
     paddingHorizontal: 7,
-    paddingVertical: 9,
+    paddingVertical: 5,
     marginBottom: 20,
   },
   hello: {

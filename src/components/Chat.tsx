@@ -21,7 +21,6 @@ const {RNCClipboard} = NativeModules;
 interface Props {
   chat: Message;
   user: string;
-  loading: boolean;
 }
 
 export type ChildProps = {
@@ -56,10 +55,11 @@ const ImageChats = memo(({curenuser, width, chat, onPress}: ChildProps) => {
   );
 });
 
-const Chat: FC<Props> = ({chat, user, loading}) => {
+const Chat: FC<Props> = ({chat, user}) => {
   const {width} = useWindowDimensions();
   const curenuser = chat.from === user;
   const navigate = useNavigation<ImageScren>();
+
   const onCopy = () => {
     RNCClipboard.setString(chat.content);
     ToastAndroid.showWithGravity('text copied', 200, ToastAndroid.CENTER);

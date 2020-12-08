@@ -57,7 +57,7 @@ export type SendMsgAction = {
 };
 
 export type SendMsgType = {
-  content: string;
-  image: string | null;
+  content?: string;
+  image?: string | null;
   to: string;
 };
