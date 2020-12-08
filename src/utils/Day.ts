@@ -45,13 +45,13 @@ export const getTime = (value: string) => {
 
 type Message = {createdAt: string};
 
-export function isSameDay(currentMessage: Message, diffMessage: Message) {
-  if (!diffMessage || !diffMessage.createdAt) {
+export function isSameDay(currentMessage: any, diffMessage: any) {
+  if (!diffMessage || !diffMessage) {
     return false;
   }
 
-  const currentCreatedAt = dayjs(currentMessage.createdAt);
-  const diffCreatedAt = dayjs(diffMessage.createdAt);
+  const currentCreatedAt = dayjs(currentMessage);
+  const diffCreatedAt = dayjs(diffMessage);
 
   if (!currentCreatedAt.isValid() || !diffCreatedAt.isValid()) {
     return false;

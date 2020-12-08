@@ -50,7 +50,7 @@ const Login: FC = () => {
     <View style={styles.root}>
       <TypoGrapy text="Konfirmasi Akunmu dulu yaa..." />
       <Image source={oke} resizeMode="contain" style={{width: 200, height: 300, marginBottom: 20}} />
-      <Button textSize={25} title="OK" onPress={loginaction} />
+      <Button textSize={25} title="Lanjutkan" onPress={loginaction} />
     </View>
   );
 };

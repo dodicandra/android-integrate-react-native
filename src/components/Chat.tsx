@@ -59,7 +59,6 @@ const Chat: FC<Props> = ({chat, user, loading}) => {
   const {width} = useWindowDimensions();
   const curenuser = chat.from === user;
   const navigate = useNavigation<ImageScren>();
-
   const onCopy = () => {
     RNCClipboard.setString(chat.content);
     ToastAndroid.showWithGravity('text copied', 200, ToastAndroid.CENTER);

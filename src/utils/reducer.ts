@@ -24,8 +24,8 @@ export const reducer = (state: State, action: Action): State => {
         message: [...state.message, ...action.payload].reverse(),
       };
     case 'ADD_SINGLE_MSG':
-      const newmsg = [...state.message];
-      newmsg.push(action.payload);
+      const newmsg = [...state.message, action.payload];
+
       return {
         ...state,
         message: newmsg,

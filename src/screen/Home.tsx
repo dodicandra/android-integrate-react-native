@@ -1,5 +1,6 @@
 import React, {memo, useEffect, useReducer, useRef, useState, FC} from 'react';
 
+import dayjs from 'dayjs';
 import {GestureResponderEvent, KeyboardAvoidingView, ScrollView, View} from 'react-native';
 
 import {useLazyQuery, useMutation, useSubscription} from '@apollo/client';
@@ -9,12 +10,9 @@ import Input from '#components/Input';
 import ScreenContainer from '#components/ScreenContainer';
 import {GET_MESSAGE, NEW_MSG, SEND_MSG} from '#GQl/gql';
 import {IgetMsg, INewMsg, SendMsgAction, SendMsgType} from '#typing/apollo';
+import {isSameDay} from '#utils/Day';
 import {PickImage} from '#utils/pickimage';
 import {reducer} from '#utils/reducer';
-
-interface Props {}
-
-let user = 'bons padang';
 
 const Home: FC = () => {
   const [state, dispatch] = useReducer(reducer, {message: []});
@@ -69,6 +67,7 @@ const Home: FC = () => {
         onContentSizeChange={() => ref.current?.scrollToEnd()}
         ref={ref}
         style={{flex: 1}}
+        indicatorStyle="white"
       >
         {state.message.map((chat) => (
           <Chat loading={loading} user="bons padang" key={chat.uuid} chat={chat} />
