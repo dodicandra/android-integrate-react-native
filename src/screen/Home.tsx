@@ -13,7 +13,7 @@ import {IgetMsg, INewMsg, SendMsgAction, SendMsgType} from '#typing/apollo';
 import {PickImage} from '#utils/pickimage';
 import {reducer} from '#utils/reducer';
 
-let user = 'dodi';
+let admin = 'bons padang';
 
 type Input = {
   content?: string;
@@ -56,7 +56,7 @@ const Home: FC = () => {
   const submit = (e: GestureResponderEvent) => {
     e.preventDefault();
 
-    sendMessage({variables: {content: chat.content, to: user, image: chat.image}});
+    sendMessage({variables: {content: chat.content, to: admin, image: chat.image}});
   };
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const Home: FC = () => {
   }, [data]);
 
   useEffect(() => {
-    getMessage({variables: {from: user}});
+    getMessage({variables: {from: admin}});
   }, []);
 
   return (

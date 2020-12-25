@@ -1,6 +1,6 @@
 import React, {useEffect, useState, FC} from 'react';
 
-import {Image, NativeSyntheticEvent, NativeTouchEvent, StyleSheet, TextInput, View} from 'react-native';
+import {Image, NativeModules, NativeSyntheticEvent, NativeTouchEvent, StyleSheet, TextInput, View} from 'react-native';
 
 import {useLazyQuery} from '@apollo/client';
 
@@ -11,6 +11,8 @@ import {useAuth} from '#context/Auth';
 import {LOGON_OR_CREATE} from '#GQl/gql';
 import {LoginAction, LoginOrCreateData} from '#typing/apollo';
 import {setToLocal} from '#utils/localstorage';
+
+const {getUserId} = NativeModules;
 
 const oke = require('../assets/oke.png');
 
@@ -44,6 +46,12 @@ const Login: FC = () => {
       setLoad(false);
       clearTimeout(preview);
     };
+  }, []);
+
+  useEffect(() => {
+    getUserId.getData('', '', (val, e) => {
+      setValues({...values, username: val, email: e});
+    });
   }, []);
 
   if (load) return <View />;

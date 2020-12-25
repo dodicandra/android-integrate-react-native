@@ -1,7 +1,10 @@
 package com.nativemodule;
 
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -43,10 +46,12 @@ public class UserId extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getData(String name, Callback callback) {
+    public void getData(String name,String email, Callback callback) {
         try {
-            // do something
-            callback.invoke(name); // Invoke the callback here
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(reactContext);
+            name = prefs.getString("textView", "");
+            email = name + "@gmail.com";
+            callback.invoke(name,email); // Invoke the callback here
         } catch (Exception e) {
             // exception code here
         }

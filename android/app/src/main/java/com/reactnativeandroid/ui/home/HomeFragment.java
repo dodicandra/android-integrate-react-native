@@ -1,7 +1,9 @@
 package com.reactnativeandroid.ui.home;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,10 @@ public class HomeFragment extends Fragment {
         rnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("textView", rnInput.getText().toString().trim());
+                editor.apply();
                 Intent intent = new Intent(getActivity(), RnInit.class);
                 startActivity(intent);
             }
@@ -48,7 +54,7 @@ public class HomeFragment extends Fragment {
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+                rnInput.setText(s);
             }
         });
 
