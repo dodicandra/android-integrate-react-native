@@ -1,6 +1,7 @@
 import React, {useEffect, useState, FC} from 'react';
 
 import {Image, NativeModules, NativeSyntheticEvent, NativeTouchEvent, StyleSheet, TextInput, View} from 'react-native';
+import crypto from 'react-native-crypto-js';
 
 import {useLazyQuery} from '@apollo/client';
 
@@ -17,6 +18,7 @@ const {getUserId} = NativeModules;
 const oke = require('../assets/oke.png');
 
 const Login: FC = () => {
+  const enc = crypto.AES.encrypt('123123', 'tes123').toString();
   const [values, setValues] = useState({username: 'bons padang', password: '123123', email: ''});
   const {setAuth} = useAuth();
 

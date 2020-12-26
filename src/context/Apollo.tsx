@@ -13,8 +13,14 @@ import {getMainDefinition} from '@apollo/client/utilities/graphql/getFromAST';
 
 import {useAuth} from './Auth';
 
+const linkLocal = 'http://172.21.224.1:4000/';
+const wsLocal = 'ws://172.21.224.1:4000/';
+
+const link = 'https://gql.admin-server-bons.com/gql/';
+const wsurl = 'wss://gql.admin-server-bons.com/gql/';
+
 const httpLink = createHttpLink({
-  uri: 'https://gql.admin-server-bons.com/gql/',
+  uri: link,
 });
 
 export default function ApolloProvider(props: any) {
@@ -30,7 +36,7 @@ export default function ApolloProvider(props: any) {
   });
 
   const wsLink = new WebSocketLink(
-    new SubscriptionClient('wss://gql.admin-server-bons.com/gql/', {
+    new SubscriptionClient(wsurl, {
       lazy: true,
       reconnect: true,
       connectionParams: {

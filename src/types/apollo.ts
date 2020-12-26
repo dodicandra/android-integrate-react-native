@@ -7,6 +7,16 @@ export type IAdmin = {
   };
 };
 
+export type IUserData = {
+  username: string;
+  token: string;
+  email: string;
+  role: string;
+  imageUrl: string;
+  phone?: string;
+  id: string;
+};
+
 export type LoginAction = {
   username: string;
   password: string;
@@ -14,21 +24,11 @@ export type LoginAction = {
 };
 
 export type LoginOrCreateData = {
-  loginOrCreate: {
-    username: string;
-    token: string;
-    email: string;
-    role: string;
-  };
+  loginOrCreate: IUserData;
 };
 
 export type LoginData = {
-  login: {
-    username: string;
-    token: string;
-    email: string;
-    role: string;
-  };
+  login: IUserData;
 };
 
 export type INewMsg = {
@@ -37,6 +37,10 @@ export type INewMsg = {
 
 export type IgetMsg = {
   getMessages: Message[];
+};
+
+export type IGetAdmin = {
+  getAdmin: IUserData[];
 };
 
 export interface Message {

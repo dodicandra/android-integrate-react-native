@@ -14,7 +14,7 @@ export async function setToLocal(key: string, val?: Values) {
     console.log(err);
   }
 }
-export async function getToLocal(key: string): Promise<Values | undefined> {
+export async function getToLocal<T = Values>(key: string): Promise<T | undefined> {
   try {
     const res = await AsycnStorage.getItem(key);
     return JSON.parse(res as string);
