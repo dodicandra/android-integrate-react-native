@@ -72,6 +72,15 @@ export const useAdmin = () => {
     onError: (err) => console.log(err),
   });
 
+  // useEffect(()=>{
+  //   const lama = momen(state?.message[state.message.length - 1]?.createdAt).format('YYYY-MM-DD hh:mm');
+  //   const newDate = momen().format('YYYY-MM-DD hh:mm');
+  //   const date1 = momen(lama);
+  //   const date2 = momen(newDate);
+  //   const duration = momen.duration(date2.diff(date1));
+  //   const min = duration.asHours();
+  // },[])
+
   useEffect(() => {
     console.log('getadmin');
     getAdmin();

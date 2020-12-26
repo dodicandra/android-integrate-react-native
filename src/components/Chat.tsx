@@ -1,7 +1,6 @@
 import React, {memo, FC} from 'react';
 
-import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
+import momen from 'moment';
 import {
   useWindowDimensions, GestureResponderEvent, Image,
   NativeModules, StyleSheet, Text,
@@ -15,7 +14,6 @@ import {ImageScren} from '#typing/navigation';
 
 import {BubleChat} from './BubleChat';
 
-dayjs.extend(localizedFormat);
 const {RNCClipboard} = NativeModules;
 
 interface Props {
@@ -31,7 +29,7 @@ export type ChildProps = {
 };
 
 const ImageChats = memo(({curenuser, width, chat, onPress}: ChildProps) => {
-  const date = dayjs(chat.createdAt).format('DD/MM/YY');
+  const date = momen(chat.createdAt).format('DD/MM/YY');
   const curentFlex = curenuser ? 'flex-end' : 'flex-start';
   return (
     <View style={{paddingVertical: 5, marginVertical: 16}}>

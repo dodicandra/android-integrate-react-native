@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
 
-import dayjs from 'dayjs';
+import momen from 'moment';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import {ChildProps} from './Chat';
@@ -9,7 +9,7 @@ import TextExtract from './TextExtract';
 const check = require('../assets/check.png');
 
 export const BubleChat = memo(({curenuser, onPress, width, chat}: ChildProps) => {
-  const date = dayjs(chat.createdAt).format('DD/MM/YY');
+  const date = momen(chat.createdAt).format('DD/MM/YY');
   const align = curenuser ? 'flex-end' : 'flex-start';
   let colorDate = curenuser ? '#dedede' : 'white';
   let colorText = curenuser ? 'black' : 'white';
@@ -33,7 +33,7 @@ export const BubleChat = memo(({curenuser, onPress, width, chat}: ChildProps) =>
           {chat.content}
         </TextExtract>
         <View style={[styles.check, {alignSelf: align}]}>
-          <Text style={{color: colorDate, fontSize: 10}}>{dayjs(chat.createdAt).format('HH:mm')}</Text>
+          <Text style={{color: colorDate, fontSize: 10}}>{momen(chat.createdAt).format('HH:mm')}</Text>
           {curenuser ? (
             <Image source={check} resizeMode="contain" style={{width: 10, marginLeft: 20, height: 10}} />
           ) : null}

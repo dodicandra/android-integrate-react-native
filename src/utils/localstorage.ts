@@ -5,7 +5,7 @@ type Values = {
   username: string;
 };
 
-export async function setToLocal(key: string, val?: Values) {
+export async function setToLocal<T = Values>(key: string, val?: T) {
   try {
     const value = JSON.stringify(val);
     await AsycnStorage.setItem(key, value);

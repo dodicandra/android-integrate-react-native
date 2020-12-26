@@ -21,8 +21,8 @@ const Home: FC = () => {
   const {
     user: {username},
   } = useAuth();
-  const {state: admin, loading} = useAdmin();
-  console.log(admin);
+  const {loading} = useAdmin();
+
   const [chat, setChat] = useState<Input>({
     content: '',
     image: null,
@@ -47,20 +47,19 @@ const Home: FC = () => {
   useEffect(() => {
     const getLO = async () => {
       const res = await getToLocal<IUserData>('admin');
+
       setAdminData(res!);
     };
     getLO();
   }, []);
 
-  console.log(adminData.username);
   const {state, sendMessage, loadingOnsend} = useGetMessage({
     onSucess: () => setChat({...chat, content: '', image: null}),
     adminName: adminData.username,
   });
 
-  const submit = (e: GestureResponderEvent) => {
+  const submit = async (e: GestureResponderEvent) => {
     e.preventDefault();
-
     sendMessage({variables: {content: chat.content, to: adminData.username!, image: chat.image}});
   };
 

@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 export function isSame(value: string | number | Date) {
   const curenDate = getDate(value);
   const newDate = getDate(new Date());
@@ -45,17 +43,17 @@ export const getTime = (value: string) => {
 
 type Message = {createdAt: string};
 
-export function isSameDay(currentMessage: any, diffMessage: any) {
-  if (!diffMessage || !diffMessage) {
-    return false;
-  }
+// export function isSameDay(currentMessage: any, diffMessage: any) {
+//   if (!diffMessage || !diffMessage) {
+//     return false;
+//   }
 
-  const currentCreatedAt = dayjs(currentMessage);
-  const diffCreatedAt = dayjs(diffMessage);
+//   const currentCreatedAt = dayjs(currentMessage);
+//   const diffCreatedAt = dayjs(diffMessage);
 
-  if (!currentCreatedAt.isValid() || !diffCreatedAt.isValid()) {
-    return false;
-  }
+//   if (!currentCreatedAt.isValid() || !diffCreatedAt.isValid()) {
+//     return false;
+//   }
 
-  return currentCreatedAt.isSame(diffCreatedAt, 'day');
-}
+//   return currentCreatedAt.isSame(diffCreatedAt, 'day');
+// }
