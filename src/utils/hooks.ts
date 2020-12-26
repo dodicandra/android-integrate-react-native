@@ -1,16 +1,18 @@
-import {useEffect, useReducer} from 'react';
+import {useEffect, useReducer, useState} from 'react';
 
 import {ToastAndroid} from 'react-native';
 
 import {useLazyQuery, useMutation, useSubscription} from '@apollo/client';
 
-import {GET_MESSAGE, NEW_MSG, SEND_MSG} from '#GQl/gql';
-import {IgetMsg, INewMsg, SendMsgAction, SendMsgType} from '#typing/apollo';
+import {GET_ADMIN, GET_MESSAGE, NEW_MSG, SEND_MSG} from '#GQl/gql';
+import {IgetMsg, IGetAdmin, INewMsg, IUserData, SendMsgAction, SendMsgType} from '#typing/apollo';
 
+import {setToLocal} from './localstorage';
 import {reducer} from './reducer';
 
 type UserGetMessage = {
   onSucess: () => void;
+  adminName?: string;
 };
 
 export function useAsync(callback: () => void, deps: React.DependencyList) {
@@ -47,8 +49,8 @@ export function useGetMessage(params: UserGetMessage) {
 
   useEffect(() => {
     console.log('getMSG');
-    getMessage({variables: {from: 'bons padang'}});
-  }, []);
+    getMessage({variables: {from: params.adminName!}});
+  }, [params.adminName]);
 
   return {
     state,
@@ -56,3 +58,27 @@ export function useGetMessage(params: UserGetMessage) {
     loadingOnsend: loading,
   };
 }
+
+export const useAdmin = () => {
+  const [state, setState] = useState<Partial<IUserData>>({});
+
+  const [getAdmin, {loading}] = useLazyQuery<IGetAdmin>(GET_ADMIN, {
+    onCompleted: async (value) => {
+      const random = Math.floor(Math.random() * value.getAdmin.length);
+      const admin = value.getAdmin[random];
+      setState(admin);
+      await setToLocal('admin', admin);
+    },
+    onError: (err) => console.log(err),
+  });
+
+  useEffect(() => {
+    console.log('getadmin');
+    getAdmin();
+  }, []);
+
+  return {
+    state,
+    loading,
+  };
+};

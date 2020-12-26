@@ -4,9 +4,12 @@ import {GestureResponderEvent, Keyboard, ScrollView, View} from 'react-native';
 
 import Chat from '#components/Chat';
 import Input from '#components/Input';
+import Modal from '#components/Modal';
 import ScreenContainer from '#components/ScreenContainer';
 import {useAuth} from '#context/Auth';
-import {useGetMessage} from '#utils/hooks';
+import {IUserData} from '#typing/apollo';
+import {useAdmin, useGetMessage} from '#utils/hooks';
+import {getToLocal} from '#utils/localstorage';
 import {PickImage} from '#utils/pickimage';
 
 type Input = {
@@ -18,10 +21,13 @@ const Home: FC = () => {
   const {
     user: {username},
   } = useAuth();
+  const {state: admin, loading} = useAdmin();
+  console.log(admin);
   const [chat, setChat] = useState<Input>({
     content: '',
     image: null,
   });
+  const [adminData, setAdminData] = useState<Partial<IUserData>>({});
   const ref = useRef<ScrollView>(null);
   const disable = chat.image?.length ? false : !chat.content?.length ? true : false;
 
@@ -38,14 +44,24 @@ const Home: FC = () => {
     }
   };
 
+  useEffect(() => {
+    const getLO = async () => {
+      const res = await getToLocal<IUserData>('admin');
+      setAdminData(res!);
+    };
+    getLO();
+  }, []);
+
+  console.log(adminData.username);
   const {state, sendMessage, loadingOnsend} = useGetMessage({
     onSucess: () => setChat({...chat, content: '', image: null}),
+    adminName: adminData.username,
   });
 
   const submit = (e: GestureResponderEvent) => {
     e.preventDefault();
 
-    sendMessage({variables: {content: chat.content, to: 'bons padang', image: chat.image}});
+    sendMessage({variables: {content: chat.content, to: adminData.username!, image: chat.image}});
   };
 
   const hideKeyboard = () => ref.current?.scrollToEnd();
@@ -81,6 +97,7 @@ const Home: FC = () => {
         onType={onType}
         onImageCancel={onCancelImage}
       />
+      <Modal visible={loading} />
     </View>
   );
 };
