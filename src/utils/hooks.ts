@@ -48,7 +48,6 @@ export function useGetMessage(params: UserGetMessage) {
   }, [subs]);
 
   useEffect(() => {
-    console.log('getMSG');
     getMessage({variables: {from: params?.adminName!}});
   }, [params?.adminName]);
 
@@ -90,7 +89,6 @@ export const useAdmin = () => {
   }, [loading]);
 
   useEffect(() => {
-    console.log('object');
     getAdmins();
   }, [getAdmins]);
 
