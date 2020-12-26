@@ -7,9 +7,7 @@ import Input from '#components/Input';
 import Modal from '#components/Modal';
 import ScreenContainer from '#components/ScreenContainer';
 import {useAuth} from '#context/Auth';
-import {IUserData} from '#typing/apollo';
 import {useAdmin, useGetMessage} from '#utils/hooks';
-import {getToLocal} from '#utils/localstorage';
 import {PickImage} from '#utils/pickimage';
 
 type Input = {
@@ -21,13 +19,11 @@ const Home: FC = () => {
   const {
     user: {username},
   } = useAuth();
-  const {loading} = useAdmin();
 
   const [chat, setChat] = useState<Input>({
     content: '',
     image: null,
   });
-  const [adminData, setAdminData] = useState<Partial<IUserData>>({});
   const ref = useRef<ScrollView>(null);
   const disable = chat.image?.length ? false : !chat.content?.length ? true : false;
 
@@ -44,23 +40,16 @@ const Home: FC = () => {
     }
   };
 
-  useEffect(() => {
-    const getLO = async () => {
-      const res = await getToLocal<IUserData>('admin');
-
-      setAdminData(res!);
-    };
-    getLO();
-  }, []);
+  const {loading, data} = useAdmin();
 
   const {state, sendMessage, loadingOnsend} = useGetMessage({
     onSucess: () => setChat({...chat, content: '', image: null}),
-    adminName: adminData.username,
+    adminName: data?.username,
   });
 
   const submit = async (e: GestureResponderEvent) => {
     e.preventDefault();
-    sendMessage({variables: {content: chat.content, to: adminData.username!, image: chat.image}});
+    sendMessage({variables: {content: chat.content, to: data.username!, image: chat.image}});
   };
 
   const hideKeyboard = () => ref.current?.scrollToEnd();

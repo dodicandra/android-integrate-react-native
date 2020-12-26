@@ -1,4 +1,4 @@
-import {useEffect, useReducer, useState} from 'react';
+import {useCallback, useEffect, useMemo, useReducer, useState} from 'react';
 
 import {ToastAndroid} from 'react-native';
 
@@ -7,7 +7,7 @@ import {useLazyQuery, useMutation, useSubscription} from '@apollo/client';
 import {GET_ADMIN, GET_MESSAGE, NEW_MSG, SEND_MSG} from '#GQl/gql';
 import {IgetMsg, IGetAdmin, INewMsg, IUserData, SendMsgAction, SendMsgType} from '#typing/apollo';
 
-import {setToLocal} from './localstorage';
+import {getToLocal, setToLocal} from './localstorage';
 import {reducer} from './reducer';
 
 type UserGetMessage = {
@@ -49,8 +49,8 @@ export function useGetMessage(params: UserGetMessage) {
 
   useEffect(() => {
     console.log('getMSG');
-    getMessage({variables: {from: params.adminName!}});
-  }, [params.adminName]);
+    getMessage({variables: {from: params?.adminName!}});
+  }, [params?.adminName]);
 
   return {
     state,
@@ -61,13 +61,16 @@ export function useGetMessage(params: UserGetMessage) {
 
 export const useAdmin = () => {
   const [state, setState] = useState<Partial<IUserData>>({});
-
+  const [data, setData] = useState<Partial<IUserData>>({});
   const [getAdmin, {loading}] = useLazyQuery<IGetAdmin>(GET_ADMIN, {
     onCompleted: async (value) => {
       const random = Math.floor(Math.random() * value.getAdmin.length);
       const admin = value.getAdmin[random];
       setState(admin);
-      await setToLocal('admin', admin);
+      if (data) return;
+      else {
+        await setToLocal('admin', admin);
+      }
     },
     onError: (err) => console.log(err),
   });
@@ -81,13 +84,28 @@ export const useAdmin = () => {
   //   const min = duration.asHours();
   // },[])
 
+  const getAdmins = useCallback(async () => {
+    const res = await getToLocal<IUserData>('admin');
+    setData(res!);
+  }, [loading]);
+
   useEffect(() => {
-    console.log('getadmin');
+    console.log('object');
+    getAdmins();
+  }, [getAdmins]);
+
+  useEffect(() => {
     getAdmin();
   }, []);
 
-  return {
-    state,
-    loading,
-  };
+  const memo = useMemo(
+    () => ({
+      data,
+      loading,
+      state,
+    }),
+    [loading, data, state]
+  );
+
+  return memo;
 };
