@@ -1,13 +1,25 @@
 import React, {useCallback, useEffect, useRef, useState, FC} from 'react';
 
-import {GestureResponderEvent, Keyboard, ScrollView, View} from 'react-native';
+import {
+  ActivityIndicator, BackHandler, GestureResponderEvent,
+  Keyboard, ScrollView, ToastAndroid,
+  View
+} from 'react-native';
 
+import {useMutation} from '@apollo/client';
+
+import AlertComponent from '#components/Alert';
 import Chat from '#components/Chat';
+import {HeaderLeft, HeaderRight} from '#components/Header';
 import Input from '#components/Input';
 import Modal from '#components/Modal';
 import ScreenContainer from '#components/ScreenContainer';
 import {useAuth} from '#context/Auth';
+import {DELE_MESSAGE} from '#GQl/gql';
+import {IDeleteMsgVar, IDeleMsgRes} from '#typing/apollo';
+import {StackHome} from '#typing/navigation';
 import {useAdmin, useGetMessage} from '#utils/hooks';
+import {removeLocal} from '#utils/localstorage';
 import {PickImage} from '#utils/pickimage';
 
 type Input = {
@@ -15,7 +27,7 @@ type Input = {
   image?: string | null;
 };
 
-const Home: FC = () => {
+const Home: FC<StackHome> = (props) => {
   const {
     user: {username},
   } = useAuth();
@@ -24,12 +36,17 @@ const Home: FC = () => {
     content: '',
     image: null,
   });
+
+  const [hidden, setHidden] = useState(false);
+  const {loading, data} = useAdmin();
+
   const ref = useRef<ScrollView>(null);
   const disable = chat.image?.length ? false : !chat.content?.length ? true : false;
-
   const onType = useCallback((text: string) => setChat({...chat, content: text}), []);
-
   const onCancelImage = useCallback(() => setChat({...chat, image: null}), []);
+  const onHide = useCallback(() => {
+    setHidden(!hidden);
+  }, [hidden]);
 
   const pickImage = async () => {
     try {
@@ -39,8 +56,6 @@ const Home: FC = () => {
       console.log(err);
     }
   };
-
-  const {loading, data} = useAdmin();
 
   const {state, sendMessage, loadingOnsend} = useGetMessage({
     onSucess: () => setChat({...chat, content: '', image: null}),
@@ -52,21 +67,45 @@ const Home: FC = () => {
     sendMessage({variables: {content: chat.content, to: data.username!, image: chat.image}});
   };
 
-  const hideKeyboard = () => ref.current?.scrollToEnd();
+  const scrollToEnd = () => ref.current?.scrollToEnd();
+
+  const [deleMessage, {loading: loadingDelet}] = useMutation<IDeleMsgRes, IDeleteMsgVar>(DELE_MESSAGE, {
+    onCompleted: async (val) => {
+      await removeLocal('admin');
+      setHidden(!hidden);
+      BackHandler.exitApp();
+    },
+    onError: (err) => {
+      ToastAndroid.showWithGravity('Oops, Terjadi Kesalahan', ToastAndroid.SHORT, ToastAndroid.CENTER);
+      console.log(err.graphQLErrors[0].extensions);
+    },
+  });
+
+  const deletAction = async (e: GestureResponderEvent) => {
+    e.preventDefault();
+    deleMessage({variables: {to: data.username!}});
+  };
 
   useEffect(() => {
-    Keyboard.addListener('keyboardDidShow', hideKeyboard);
+    Keyboard.addListener('keyboardDidShow', scrollToEnd);
 
     return () => {
-      Keyboard.addListener('keyboardDidHide', hideKeyboard);
+      Keyboard.addListener('keyboardDidHide', scrollToEnd);
     };
   }, []);
+
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerRight: () => (state?.message?.length ? <HeaderRight onPress={onHide} /> : null),
+      headerLeft: () => <HeaderLeft />,
+    });
+  }, [state?.message?.length]);
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <ScrollView
         contentContainerStyle={{padding: 20}}
-        onContentSizeChange={() => ref.current?.scrollToEnd()}
+        onContentSizeChange={scrollToEnd}
         ref={ref}
         style={{flex: 1}}
         indicatorStyle="white"
@@ -85,7 +124,12 @@ const Home: FC = () => {
         onType={onType}
         onImageCancel={onCancelImage}
       />
-      <Modal visible={loading} />
+      <Modal visible={loading}>
+        <ActivityIndicator size={50} color="#03ACD2" />
+      </Modal>
+      <Modal visible={hidden} onRequestClose={onHide}>
+        <AlertComponent loading={loadingDelet} onPressCancel={onHide} onPressOk={deletAction} />
+      </Modal>
     </View>
   );
 };

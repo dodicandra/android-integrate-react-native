@@ -22,3 +22,11 @@ export async function getToLocal<T = Values>(key: string): Promise<T | undefined
     console.log(err);
   }
 }
+
+export async function removeLocal(item: string) {
+  try {
+    await AsycnStorage.removeItem(item);
+  } catch (err) {
+    console.log(err);
+  }
+}

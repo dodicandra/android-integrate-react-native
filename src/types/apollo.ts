@@ -15,6 +15,7 @@ export type IUserData = {
   imageUrl: string;
   phone?: string;
   id: string;
+  online: boolean;
 };
 
 export type LoginAction = {
@@ -64,4 +65,17 @@ export type SendMsgType = {
   content?: string;
   image?: string | null;
   to: string;
+};
+
+export type IDeletMsg = {
+  status: number;
+  ifon: string;
+};
+
+export type IDeleteMsgVar = {
+  to: string;
+};
+
+export type IDeleMsgRes = {
+  deletMessage: IDeletMsg;
 };

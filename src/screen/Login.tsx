@@ -9,7 +9,7 @@ import Button from '#components/Button';
 import ScreenContainer from '#components/ScreenContainer';
 import TypoGrapy from '#components/TypoGrapy';
 import {useAuth} from '#context/Auth';
-import {LOGON_OR_CREATE} from '#GQl/gql';
+import {LOGIN_OR_CREATE} from '#GQl/gql';
 import {LoginAction, LoginOrCreateData} from '#typing/apollo';
 import {setToLocal} from '#utils/localstorage';
 
@@ -23,7 +23,7 @@ const Login: FC = () => {
   const {setAuth} = useAuth();
 
   const [load, setLoad] = useState(true);
-  const [loginuser] = useLazyQuery<LoginOrCreateData, LoginAction>(LOGON_OR_CREATE, {
+  const [loginuser, {loading}] = useLazyQuery<LoginOrCreateData, LoginAction>(LOGIN_OR_CREATE, {
     onCompleted: async (data) => {
       const value = data.loginOrCreate;
       await setToLocal('user', value);
@@ -66,7 +66,7 @@ const Login: FC = () => {
         value={values.username}
         onChangeText={(text) => setValues({...values, username: text, email: text.replace(/\s+/g, '') + '@gmail.com'})}
       />
-      <Button textSize={25} title="Lanjutkan" onPress={loginaction} />
+      <Button loading={loading} textSize={25} title="Lanjutkan" onPress={loginaction} />
     </View>
   );
 };

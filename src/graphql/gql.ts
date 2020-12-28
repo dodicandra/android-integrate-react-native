@@ -20,6 +20,7 @@ export const GET_ADMIN = gql`
       createdAt
       imageUrl
       role
+      online
     }
   }
 `;
@@ -60,7 +61,7 @@ export const LOGIN = gql`
   }
 `;
 
-export const LOGON_OR_CREATE = gql`
+export const LOGIN_OR_CREATE = gql`
   query loginOrCreate($username: String!, $password: String!, $email: String!) {
     loginOrCreate(username: $username, password: $password, email: $email) {
       username
@@ -68,6 +69,15 @@ export const LOGON_OR_CREATE = gql`
       createdAt
       token
       role
+    }
+  }
+`;
+
+export const DELE_MESSAGE = gql`
+  mutation deletMessage($to: String!) {
+    deletMessage(to: $to) {
+      status
+      info
     }
   }
 `;

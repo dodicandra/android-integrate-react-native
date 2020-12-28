@@ -73,7 +73,6 @@ export const useAdmin = () => {
     },
     onError: (err) => console.log(err),
   });
-
   // useEffect(()=>{
   //   const lama = momen(state?.message[state.message.length - 1]?.createdAt).format('YYYY-MM-DD hh:mm');
   //   const newDate = momen().format('YYYY-MM-DD hh:mm');
@@ -101,8 +100,9 @@ export const useAdmin = () => {
       data,
       loading,
       state,
+      getAdmins,
     }),
-    [loading, data, state]
+    [loading, data, state, getAdmins]
   );
 
   return memo;
