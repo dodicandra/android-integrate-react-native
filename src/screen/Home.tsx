@@ -1,12 +1,17 @@
 import React, {useCallback, useEffect, useRef, useState, FC} from 'react';
 
 import {
-  ActivityIndicator, BackHandler, GestureResponderEvent,
-  Keyboard, ScrollView, ToastAndroid,
-  View
+  ActivityIndicator,
+  BackHandler,
+  GestureResponderEvent,
+  Keyboard,
+  ScrollView,
+  ToastAndroid,
+  View,
 } from 'react-native';
 
 import {useMutation} from '@apollo/client';
+import messaging from '@react-native-firebase/messaging';
 
 import AlertComponent from '#components/Alert';
 import Chat from '#components/Chat';
@@ -60,6 +65,7 @@ const Home: FC<StackHome> = (props) => {
   const {state, sendMessage, loadingOnsend} = useGetMessage({
     onSucess: () => setChat({...chat, content: '', image: null}),
     adminName: data?.username,
+    userName: username!,
   });
 
   const submit = async (e: GestureResponderEvent) => {
@@ -100,6 +106,16 @@ const Home: FC<StackHome> = (props) => {
       headerLeft: () => <HeaderLeft />,
     });
   }, [state?.message?.length]);
+
+  useEffect(() => {
+    const subs = messaging().onMessage(async (res) => {
+      const adminName = res.data?.admin === (await data.username);
+      // console.log(adminName, res.data, data.username);
+    });
+    return () => {
+      subs;
+    };
+  }, []);
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>

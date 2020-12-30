@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application';
 
+apply plugin: 'com.google.gms.google-services'
+
 project.ext.react = [
         enableHermes: false,
         entryFile: "index.js"
@@ -7,7 +9,7 @@ project.ext.react = [
 
 apply from: "../../node_modules/react-native/react.gradle"
 
-def jscFlavor = 'org.webkit:android-jsc:+';
+def jscFlavor = 'org.webkit:android-jsc-intl:+';
 def enableHermes = project.ext.react.get("enableHermes", false);
 def enableSeparateBuildPerCPUArchitecture = false
 

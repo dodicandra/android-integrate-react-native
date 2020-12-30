@@ -13,6 +13,7 @@ import {reducer} from './reducer';
 type UserGetMessage = {
   onSucess: () => void;
   adminName?: string;
+  userName: string;
 };
 
 export function useAsync(callback: () => void, deps: React.DependencyList) {
@@ -25,7 +26,7 @@ export function useGetMessage(params: UserGetMessage) {
   const [state, dispatch] = useReducer(reducer, {message: []});
   const [getMessage] = useLazyQuery<IgetMsg, {from: string}>(GET_MESSAGE, {
     onCompleted: (data) => {
-      dispatch({type: 'ADD_MSG', payload: data.getMessages});
+      dispatch({type: 'ADD_MSG', payload: data.getMessages, user: params.userName, admin: params.adminName!});
     },
   });
 
@@ -43,7 +44,7 @@ export function useGetMessage(params: UserGetMessage) {
 
   useEffect(() => {
     if (subs) {
-      dispatch({type: 'ADD_SINGLE_MSG', payload: subs.newMessage});
+      dispatch({type: 'ADD_SINGLE_MSG', payload: subs.newMessage, user: params.userName, admin: params.adminName!});
     }
   }, [subs]);
 
