@@ -16,7 +16,6 @@ interface Props extends StackHeaderProps {
 
 const Header: FC<Props> = ({name}) => {
   const {width} = useWindowDimensions();
-
   return (
     <View style={[styles.root, {width}]}>
       <View style={{flexDirection: 'row'}}>

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1097812853783",
+    "project_id": "bons-chat-cs",
+    "storage_bucket": "bons-chat-cs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1097812853783:android:2f1ddf9549df3036710852",
+        "android_client_info": {
+          "package_name": "com.reactnativeandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1097812853783-p6l8mtmsguj5a0djd9cua7vn8137tl41.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reactnativeandroid",
+            "certificate_hash": "6a49b2def8eea18411df0b343aa773009aab6694"
+          }
+        },
+        {
+          "client_id": "1097812853783-gjl266i70unqgp50lp2g79vvviqa62jv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0ou7F23urMIiu6NhioyEmAxlktf8hxvw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1097812853783-gjl266i70unqgp50lp2g79vvviqa62jv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,11 +1,11 @@
 import React, {useEffect, useState, FC} from 'react';
 
-import {Image, NativeModules, NativeSyntheticEvent, NativeTouchEvent, StyleSheet, TextInput, View} from 'react-native';
+import {ActivityIndicator, BackHandler, Image, NativeModules, StyleSheet, ToastAndroid, View} from 'react-native';
 import crypto from 'react-native-crypto-js';
 
 import {useLazyQuery} from '@apollo/client';
+import message from '@react-native-firebase/messaging';
 
-import Button from '#components/Button';
 import ScreenContainer from '#components/ScreenContainer';
 import TypoGrapy from '#components/TypoGrapy';
 import {useAuth} from '#context/Auth';
@@ -19,54 +19,51 @@ const oke = require('../assets/oke.png');
 
 const Login: FC = () => {
   const enc = crypto.AES.encrypt('123123', 'tes123').toString();
-  const [values, setValues] = useState({username: 'bons padang', password: '123123', email: ''});
+  const [values, setValues] = useState({username: 'dodi', password: '123123', email: 'dodi@gmai', token: ''});
   const {setAuth} = useAuth();
-
   const [load, setLoad] = useState(true);
-  const [loginuser, {loading}] = useLazyQuery<LoginOrCreateData, LoginAction>(LOGIN_OR_CREATE, {
+
+  const [loginuser] = useLazyQuery<LoginOrCreateData, LoginAction>(LOGIN_OR_CREATE, {
     onCompleted: async (data) => {
       const value = data.loginOrCreate;
       await setToLocal('user', value);
       setAuth(value);
+      setLoad(false);
     },
     onError: (e) => {
+      ToastAndroid.show('Oops.. Terjadi Kesalahan', 3000);
+      BackHandler.exitApp();
       console.log('error', e?.graphQLErrors[0]);
     },
   });
 
-  const loginaction = (ev: NativeSyntheticEvent<NativeTouchEvent>) => {
-    ev.preventDefault();
-    loginuser({variables: values});
+  const loginaction = (token: string) => {
+    loginuser({variables: {...values, token, phone: '08123123123'}});
   };
-
-  useEffect(() => {
-    const preview = setTimeout(() => {
-      setLoad(false);
-    }, 500);
-
-    return () => {
-      setLoad(false);
-      clearTimeout(preview);
-    };
-  }, []);
 
   useEffect(() => {
     getUserId.getData('', '', (val, e) => {
       setValues({...values, username: val, email: e});
     });
+    message()
+      .getToken()
+      .then(async (res) => {
+        setValues({...values, token: res});
+        getUserId.getData('', '', (n, e, p, t) => {
+          let em = e.split(' ').join('');
+          console.log({n, e: em, p, t});
+        });
+        loginaction(res);
+      });
   }, []);
 
   if (load) return <View />;
 
   return (
     <View style={styles.root}>
-      <TypoGrapy text="Konfirmasi Akunmu dulu yaa..." />
       <Image source={oke} resizeMode="contain" style={{width: 200, height: 300, marginBottom: 20}} />
-      <TextInput
-        value={values.username}
-        onChangeText={(text) => setValues({...values, username: text, email: text.replace(/\s+/g, '') + '@gmail.com'})}
-      />
-      <Button loading={loading} textSize={25} title="Lanjutkan" onPress={loginaction} />
+      <ActivityIndicator size={40} color="#03ACD2" />
+      <TypoGrapy text="Loading..." />
     </View>
   );
 };

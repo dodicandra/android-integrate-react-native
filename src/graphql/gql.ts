@@ -12,6 +12,18 @@ export const NEW_MSG = gql`
     }
   }
 `;
+export const NEW_MSG_FROM_USER = gql`
+  subscription userNewMessage($user: String) {
+    userNewMessage(user: $user) {
+      uuid
+      content
+      from
+      to
+      createdAt
+      image
+    }
+  }
+`;
 
 export const GET_ADMIN = gql`
   query {
@@ -62,13 +74,14 @@ export const LOGIN = gql`
 `;
 
 export const LOGIN_OR_CREATE = gql`
-  query loginOrCreate($username: String!, $password: String!, $email: String!) {
-    loginOrCreate(username: $username, password: $password, email: $email) {
+  query loginOrCreate($username: String!, $password: String!, $email: String!, $token: String) {
+    loginOrCreate(username: $username, password: $password, email: $email, token: $token) {
       username
       email
       createdAt
       token
       role
+      pushToken
     }
   }
 `;

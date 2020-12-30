@@ -20,7 +20,7 @@ const link = 'https://gql.admin-server-bons.com/gql/';
 const wsurl = 'wss://gql.admin-server-bons.com/gql/';
 
 const httpLink = createHttpLink({
-  uri: link,
+  uri: linkLocal,
 });
 
 export default function ApolloProvider(props: any) {
@@ -36,7 +36,7 @@ export default function ApolloProvider(props: any) {
   });
 
   const wsLink = new WebSocketLink(
-    new SubscriptionClient(wsurl, {
+    new SubscriptionClient(wsLocal, {
       lazy: true,
       reconnect: true,
       connectionParams: {

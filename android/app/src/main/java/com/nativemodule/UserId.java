@@ -20,6 +20,7 @@ public class UserId extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private final String packageName;
 
+
     public UserId(@NonNull ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
@@ -51,7 +52,9 @@ public class UserId extends ReactContextBaseJavaModule {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(reactContext);
             name = prefs.getString("textView", "");
             email = name + "@gmail.com";
-            callback.invoke(name,email); // Invoke the callback here
+           String token = "adwasdmifhjrfg";
+           String phone = "082341523234";
+            callback.invoke(name,email,phone,token); // Invoke the callback here
         } catch (Exception e) {
             // exception code here
         }

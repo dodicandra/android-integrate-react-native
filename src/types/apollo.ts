@@ -22,6 +22,8 @@ export type LoginAction = {
   username: string;
   password: string;
   email?: string;
+  token: string;
+  phone: string;
 };
 
 export type LoginOrCreateData = {
