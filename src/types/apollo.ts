@@ -23,7 +23,7 @@ export type LoginAction = {
   password: string;
   email?: string;
   token: string;
-  phone: string;
+  phone?: string;
 };
 
 export type LoginOrCreateData = {

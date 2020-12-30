@@ -1,4 +1,4 @@
-package com.nativemodule;
+package com.reactnativeandroid;
 
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
