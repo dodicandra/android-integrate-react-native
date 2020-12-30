@@ -33,6 +33,16 @@ type Input = {
   image?: string | null;
 };
 
+async function requestUserPermission() {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED || authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+}
+
 const Home: FC<StackHome> = (props) => {
   const {
     user: {username},
@@ -94,6 +104,10 @@ const Home: FC<StackHome> = (props) => {
   };
 
   useEffect(() => {
+    requestUserPermission();
+  }, []);
+
+  useEffect(() => {
     Keyboard.addListener('keyboardDidShow', scrollToEnd);
 
     return () => {
@@ -110,6 +124,7 @@ const Home: FC<StackHome> = (props) => {
 
   useEffect(() => {
     const subs = messaging().onMessage(async (res) => {
+      console.log(res);
       const adminName = res.data?.admin === (await data.username);
       if (adminName) {
         Alert.alert('New Message');

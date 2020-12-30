@@ -74,8 +74,15 @@ export const LOGIN = gql`
 `;
 
 export const LOGIN_OR_CREATE = gql`
-  query loginOrCreate($username: String!, $password: String!, $email: String!, $token: String) {
-    loginOrCreate(username: $username, password: $password, email: $email, token: $token) {
+  query loginOrCreate(
+    $username: String!
+    $password: String!
+    $email: String!
+    $token: String
+    $phone: String
+    $id: String
+  ) {
+    loginOrCreate(username: $username, password: $password, email: $email, token: $token, phone: $phone, id: $id) {
       username
       email
       createdAt
