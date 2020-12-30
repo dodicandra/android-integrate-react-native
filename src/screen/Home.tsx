@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useRef, useState, FC} from 'react';
 
 import {
   ActivityIndicator,
+  Alert,
   BackHandler,
   GestureResponderEvent,
   Keyboard,
@@ -110,7 +111,9 @@ const Home: FC<StackHome> = (props) => {
   useEffect(() => {
     const subs = messaging().onMessage(async (res) => {
       const adminName = res.data?.admin === (await data.username);
-      // console.log(adminName, res.data, data.username);
+      if (adminName) {
+        Alert.alert('New Message');
+      }
     });
     return () => {
       subs;

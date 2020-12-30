@@ -1,6 +1,6 @@
 import React, {useEffect, useState, FC} from 'react';
 
-import {ActivityIndicator, Image, NativeModules, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, BackHandler, Image, NativeModules, StyleSheet, ToastAndroid, View} from 'react-native';
 import crypto from 'react-native-crypto-js';
 
 import {useLazyQuery} from '@apollo/client';
@@ -19,7 +19,7 @@ const oke = require('../assets/oke.png');
 
 const Login: FC = () => {
   const enc = crypto.AES.encrypt('123123', 'tes123').toString();
-  const [values, setValues] = useState({username: 'dodi', password: '123123', email: 'dodi@gmail.com', token: ''});
+  const [values, setValues] = useState({username: 'dodi', password: '123123', email: 'dodi@gmai', token: ''});
   const {setAuth} = useAuth();
   const [load, setLoad] = useState(true);
 
@@ -31,6 +31,8 @@ const Login: FC = () => {
       setLoad(false);
     },
     onError: (e) => {
+      ToastAndroid.show('Oops.. Terjadi Kesalahan', 3000);
+      BackHandler.exitApp();
       console.log('error', e?.graphQLErrors[0]);
     },
   });
@@ -47,6 +49,10 @@ const Login: FC = () => {
       .getToken()
       .then(async (res) => {
         setValues({...values, token: res});
+        getUserId.getData('', '', (n, e, p, t) => {
+          let em = e.split(' ').join('');
+          console.log({n, e: em, p, t});
+        });
         loginaction(res);
       });
   }, []);

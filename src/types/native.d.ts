@@ -4,7 +4,7 @@ import 'react-native-image-crop-picker';
 export interface getUserId {
   getConstants: () => string;
   getId: () => string;
-  getData: (name: string, a: string, calback: (d: string, e: string) => void) => any;
+  getData: (name: string, a: string, calback: (d: string, e: string, p: string, t: stirng) => void) => any;
   getDataFromInput: (calllback: (data) => string) => void;
 }
 
